@@ -1,7 +1,6 @@
 package com.gildedgames.fuzzyjava.api;
 
-import com.gildedgames.fuzzyjava.api.matrices.FMatrixOperations;
-import com.gildedgames.fuzzyjava.api.matrices.FVector;
+import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
 import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
@@ -29,14 +28,12 @@ public interface FuzzyFactory
 
 	<T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation(FRelationSet<? extends T1, ? extends T2> relation);
 
-	FVector createVector(int length);
+	FSet<Integer> createVector(float[] array);
 
-	FVector createVector(float[] array);
+	<E> FSet<E> createVector(FSet<E> set);
 
 	FSetOperations createSetOperations();
 
 	FRelationOperations createRelationOperations();
-
-	FMatrixOperations createVectorOperations();
 
 }

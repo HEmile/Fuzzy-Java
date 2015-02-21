@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.gildedgames.fuzzyjava.api.matrices.FVector;
+import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.util.MutablePair;
 import com.gildedgames.fuzzyjava.util.Pair;
 
-public class ArrayFVector implements FVector
+public class ArrayFVector implements FSet<Integer>
 {
 	private final float[] array;
 
@@ -24,35 +24,14 @@ public class ArrayFVector implements FVector
 	}
 
 	@Override
-	public float set(int object, float membership)
-	{
-		membership = Math.max(0, Math.min(1, membership));
-		final float old = this.array[object];
-		this.array[object] = membership;
-		return old;
-	}
-
-	@Override
 	public float membershipOf(Integer object)
 	{
 		final int i = object;
-		if (i >= 0 && i < this.length())
+		if (i >= 0 && i < this.size())
 		{
 			return this.array[object];
 		}
 		return 0.0f;
-	}
-
-	@Override
-	public void clear()
-	{
-		Arrays.fill(this.array, 0);
-	}
-
-	@Override
-	public int length()
-	{
-		return this.array.length;
 	}
 
 	@Override
@@ -65,7 +44,7 @@ public class ArrayFVector implements FVector
 			@Override
 			public boolean hasNext()
 			{
-				return this.pair == null || this.pair.firstM < ArrayFVector.this.length();
+				return this.pair == null || this.pair.firstM < ArrayFVector.this.size();
 			}
 
 			@Override
@@ -87,7 +66,7 @@ public class ArrayFVector implements FVector
 	@Override
 	public int size()
 	{
-		return this.length();
+		return this.array.length;
 	}
 
 }

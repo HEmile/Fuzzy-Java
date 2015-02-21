@@ -1,15 +1,14 @@
 package com.gildedgames.fuzzyjava.core;
 
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
-import com.gildedgames.fuzzyjava.api.matrices.FMatrixOperations;
-import com.gildedgames.fuzzyjava.api.matrices.FVector;
+import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
 import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 import com.gildedgames.fuzzyjava.core.matrices.ArrayFVector;
-import com.gildedgames.fuzzyjava.core.matrices.StandardMatrixOperations;
+import com.gildedgames.fuzzyjava.core.matrices.HashFVector;
 import com.gildedgames.fuzzyjava.core.sets.HashFSetDiscrete;
 import com.gildedgames.fuzzyjava.core.sets.StandardSetOperations;
 import com.gildedgames.fuzzyjava.core.sets.relations.HashFRelation;
@@ -67,21 +66,15 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	}
 
 	@Override
-	public FVector createVector(int length)
-	{
-		return new ArrayFVector(length);
-	}
-
-	@Override
-	public FVector createVector(float[] array)
+	public FSet<Integer> createVector(float[] array)
 	{
 		return new ArrayFVector(array);
 	}
 
 	@Override
-	public FMatrixOperations createVectorOperations()
+	public <E> FSet<E> createVector(FSet<E> set)
 	{
-		return new StandardMatrixOperations();
+		return new HashFVector<E>(set);
 	}
 
 }

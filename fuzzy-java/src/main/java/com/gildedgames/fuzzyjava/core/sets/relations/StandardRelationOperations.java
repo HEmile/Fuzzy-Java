@@ -2,6 +2,7 @@ package com.gildedgames.fuzzyjava.core.sets.relations;
 
 import java.util.Map.Entry;
 
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
@@ -75,4 +76,101 @@ public class StandardRelationOperations implements FRelationOperations
 		return newRelation;
 	}
 
+	@Override
+	public <E> boolean isReflexive(FRelationSet<E, E> relation)
+	{
+		if (relation.width() != relation.length())
+		{
+			return false;
+		}
+		for (final E element : relation.universe1())
+		{
+			if (relation.strengthOfRelation(element, element) != 1)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public <E> boolean isSymmetric(FRelationSet<E, E> relation)
+	{
+		if (relation.width() != relation.length())
+		{
+			return false;
+		}
+		for (final E element1 : relation.universe1())
+		{
+			for (final E element2 : relation.universe2())
+			{
+				if (relation.strengthOfRelation(element1, element2) != relation.strengthOfRelation(element2, element1))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public <E> boolean isTransitive(FRelationSet<E, E> relation)
+	{
+		if (relation.width() != relation.length())
+		{
+			return false;
+		}
+		for (final E a : relation.universe1())
+		{
+			for (final E b : relation.universe1())
+			{
+				for (final E c : relation.universe1())
+				{
+					final float aToB = relation.strengthOfRelation(a, b);
+					final float bToC = relation.strengthOfRelation(b, c);
+					final float aToC = relation.strengthOfRelation(a, c);
+
+					if (aToC < Math.min(aToB, bToC))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public <T1, T2> FRelation<T1, T1> cosineAmplitude(FRelationSet<T1, T2> matrix)
+	{
+		if (matrix == null)
+		{
+			return new HashFRelation<T1, T1>(0);
+		}
+		final int n = matrix.width();
+		final FRelationDiscr<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
+		for (final T1 i : matrix.universe1())
+		{
+			for (final T1 j : matrix.universe1())
+			{
+				float dotProduct = 0.0f;
+				float sum1 = 0.0f;
+				float sum2 = 0.0f;
+				for (final T2 k : matrix.universe2())
+				{
+					final float value1 = matrix.strengthOfRelation(i, k);
+					final float value2 = matrix.strengthOfRelation(j, k);
+
+					dotProduct += value1 * value2;
+					sum1 += value1 * value1;
+					sum2 += value2 * value2;
+				}
+				dotProduct = Math.abs(dotProduct);
+				final float nom = (float) Math.sqrt(sum1 * sum2);//TODO: invalid cast?
+				relation.add(i, j, dotProduct / nom);
+			}
+		}
+
+		return relation;
+	}
 }

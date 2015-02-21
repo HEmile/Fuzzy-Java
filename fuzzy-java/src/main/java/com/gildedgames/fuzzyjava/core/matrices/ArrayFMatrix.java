@@ -1,33 +1,29 @@
 package com.gildedgames.fuzzyjava.core.matrices;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.gildedgames.fuzzyjava.api.matrices.FMatrix;
-import com.gildedgames.fuzzyjava.api.matrices.FVector;
+import com.gildedgames.fuzzyjava.api.sets.FSet;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
+import com.gildedgames.fuzzyjava.util.CollectionHelper;
 import com.gildedgames.fuzzyjava.util.MutablePair;
 
-public class ArrayFMatrix implements FMatrix
+public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 {
-	private final FVector[] vectors;
+	private final FSet<Integer>[] vectors;
 
 	private final int width, length;
 
 	public ArrayFMatrix(int width, int length)
 	{
-		this.vectors = new FVector[width];
+		this.vectors = new FSet[width];
 		for (int i = 0; i < width; i++)
 		{
 			this.vectors[i] = new ArrayFVector(length);
 		}
 		this.width = width;
 		this.length = length;
-	}
-
-	@Override
-	public void setMembership(int i, int j, float membership)
-	{
-		this.vectors[i].set(j, membership);
 	}
 
 	@Override
@@ -80,15 +76,6 @@ public class ArrayFMatrix implements FMatrix
 	}
 
 	@Override
-	public void clear()
-	{
-		for (int i = 0; i < this.width; i++)
-		{
-			this.vectors[i] = new ArrayFVector(this.length);
-		}
-	}
-
-	@Override
 	public int length()
 	{
 		return this.length;
@@ -101,19 +88,20 @@ public class ArrayFMatrix implements FMatrix
 	}
 
 	@Override
-	public FVector getColumn(int i)
+	public FSet<Integer> getColumn(Integer i)
 	{
 		return this.vectors[i];
 	}
 
 	@Override
-	public FVector getRow(int j)
+	public FSet<Integer> getRow(Integer j)
 	{
-		final FVector vector = new ArrayFVector(this.width);
+		final float[] buffer = new float[this.width];
 		for (int i = 0; i < this.width; i++)
 		{
-			vector.set(i, this.strengthOfRelation(i, j));
+			buffer[i] = this.strengthOfRelation(i, j);
 		}
+		final FSet<Integer> vector = new ArrayFVector(buffer);
 		return vector;
 	}
 
@@ -121,6 +109,18 @@ public class ArrayFMatrix implements FMatrix
 	public int size()
 	{
 		return this.width * this.length;
+	}
+
+	@Override
+	public Collection<Integer> universe1()
+	{
+		return CollectionHelper.rangeTo(this.width);
+	}
+
+	@Override
+	public Collection<Integer> universe2()
+	{
+		return CollectionHelper.rangeTo(this.length);
 	}
 
 }
