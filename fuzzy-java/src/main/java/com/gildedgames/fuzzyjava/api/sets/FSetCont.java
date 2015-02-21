@@ -1,4 +1,4 @@
-package com.gildedgames.fuzzyjava.core.interfaces;
+package com.gildedgames.fuzzyjava.api.sets;
 
 public interface FSetCont
 {

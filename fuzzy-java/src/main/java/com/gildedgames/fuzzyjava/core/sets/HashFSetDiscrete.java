@@ -1,12 +1,14 @@
-package com.gildedgames.fuzzyjava.core.implementation;
+package com.gildedgames.fuzzyjava.core.sets;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.gildedgames.fuzzyjava.core.interfaces.FSetDiscrete;
-import com.gildedgames.fuzzyjava.core.interfaces.FSetOperations;
+import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
+import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
 
 /**
  * Implementation of a discrete fuzzy set using the most common mathematical
@@ -14,7 +16,7 @@ import com.gildedgames.fuzzyjava.core.interfaces.FSetOperations;
  * the theory as closely as possible.
  * @author Emile
  */
-public class HashFSetDiscrete<E> implements FSetDiscrete<E>
+public class HashFSetDiscrete<E> implements FSetDiscr<E>
 {
 
 	private final Map<E, Float> map;
@@ -29,17 +31,14 @@ public class HashFSetDiscrete<E> implements FSetDiscrete<E>
 		this.map = new HashMap<E, Float>(initialCapacity);
 	}
 
-	public HashFSetDiscrete(FSetDiscrete<? extends E> set)
+	public HashFSetDiscrete(FSetDiscr<? extends E> set)
 	{
-		this.map = new HashMap<E, Float>(set.elementSize());
-		for (final Entry<? extends E, Float> entry : set.entrySet())
-		{
-			this.map.put(entry.getKey(), entry.getValue());
-		}
+		this.map = new HashMap<E, Float>(set.size());
+		this.addAll(set);
 	}
 
 	@Override
-	public int elementSize()
+	public int size()
 	{
 		return this.map.size();
 	}
@@ -47,6 +46,7 @@ public class HashFSetDiscrete<E> implements FSetDiscrete<E>
 	@Override
 	public void add(E object, float membership)
 	{
+		membership = Math.max(0.0f, Math.min(1.0f, membership));
 		this.map.put(object, membership);
 	}
 
@@ -67,13 +67,7 @@ public class HashFSetDiscrete<E> implements FSetDiscrete<E>
 	}
 
 	@Override
-	public Set<Entry<E, Float>> entrySet()
-	{
-		return this.map.entrySet();
-	}
-
-	@Override
-	public Set<E> objects()
+	public Set<E> universe()
 	{
 		return this.map.keySet();
 	}
@@ -92,12 +86,44 @@ public class HashFSetDiscrete<E> implements FSetDiscrete<E>
 			return true;
 		}
 
-		if (obj instanceof FSetDiscrete)
+		if (obj instanceof FSetDiscr)
 		{
 			final FSetOperations operations = new StandardSetOperations();
-			final FSetDiscrete<?> set = (FSetDiscrete<?>) obj;
-			return operations.contains(this, set) && operations.contains(set, this);
+			try
+			{
+				@SuppressWarnings("unchecked")
+				final FSetDiscr<E> set = (FSetDiscr<E>) obj;
+				return operations.contains(this, set) && operations.contains(set, this);
+			}
+			catch (final ClassCastException c)
+			{
+				c.printStackTrace();
+			}
 		}
 		return false;
+	}
+
+	@Override
+	public void addAll(FSetDiscr<? extends E> fuzzySet)
+	{
+		for (final Entry<? extends E, Float> entry : fuzzySet)
+		{
+			this.map.put(entry.getKey(), entry.getValue());
+		}
+	}
+
+	@Override
+	public void addAll(Collection<? extends E> set)
+	{
+		for (final E element : set)
+		{
+			this.map.put(element, 1.0f);
+		}
+	}
+
+	@Override
+	public Iterator<Entry<E, Float>> iterator()
+	{
+		return this.map.entrySet().iterator();
 	}
 }

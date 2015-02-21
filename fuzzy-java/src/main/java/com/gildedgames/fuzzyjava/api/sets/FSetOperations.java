@@ -1,4 +1,6 @@
-package com.gildedgames.fuzzyjava.core.interfaces;
+package com.gildedgames.fuzzyjava.api.sets;
+
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
 
 public interface FSetOperations
 {
@@ -7,7 +9,7 @@ public interface FSetOperations
 	 * of the complement can vary, but is usually the same 
 	 * objects with membership: 1 - membership
 	 */
-	<E> FSetDiscrete<E> complement(FSetDiscrete<E> set);
+	<E> FSetDiscr<E> complement(FSetDiscr<E> set);
 
 	/**
 	 * Returns the union between this set and the given.
@@ -15,7 +17,7 @@ public interface FSetOperations
 	 * usually the maximum value of the membership value
 	 * of each element.
 	 */
-	<E> FSetDiscrete<E> union(FSetDiscrete<E> set1, FSetDiscrete<? extends E> set2);
+	<E> FSetDiscr<E> union(FSetDiscr<E> set1, FSetDiscr<? extends E> set2);
 
 	/**
 	 * Returns the intersection between this set and the given.
@@ -23,7 +25,7 @@ public interface FSetOperations
 	 * usually the minimum value of the membership value of
 	 * each element.
 	 */
-	<E> FSetDiscrete<E> intersection(FSetDiscrete<E> set1, FSetDiscrete<? extends E> set2);
+	<E> FSetDiscr<E> intersection(FSetDiscr<E> set1, FSetDiscr<? extends E> set2);
 
 	/**
 	 * Does the fuzzy cartesian product between two given sets
@@ -31,10 +33,10 @@ public interface FSetOperations
 	 * The strength of the relation is usually defined as the minimum 
 	 * of the membership of the two elements.
 	 */
-	<T1, T2> FRelation<T1, T2> cartesian(FSetDiscrete<T1> set1, FSetDiscrete<T2> set2);
+	<T1, T2> FRelation<T1, T2> cartesian(FSetDiscr<T1> set1, FSetDiscr<T2> set2);
 
 	/**
 	 * Returns true if set1 contains set2. Note that this uses set2 <= set1
 	 */
-	boolean contains(FSetDiscrete<?> set1, FSetDiscrete<?> set2);
+	<E> boolean contains(FSetDiscr<E> set1, FSetDiscr<? extends E> set2);
 }

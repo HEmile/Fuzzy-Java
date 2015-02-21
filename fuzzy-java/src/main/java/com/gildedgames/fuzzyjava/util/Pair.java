@@ -1,6 +1,8 @@
 package com.gildedgames.fuzzyjava.util;
 
-public class Pair<T, U>
+import java.util.Map;
+
+public class Pair<T, U> implements Map.Entry<T, U>
 {
 	private final T first;
 
@@ -44,8 +46,26 @@ public class Pair<T, U>
 			return false;
 		}
 		final Pair<T, U> other = this.getClass().cast(oth);
-		return (this.first == null ? other.first == null : this.first.equals(other.first))
-				&& (this.second == null ? other.second == null : this.second.equals(other.second));
+		return (this.getFirst() == null ? other.getFirst() == null : this.getFirst().equals(other.getFirst()))
+				&& (this.getSecond() == null ? other.getSecond() == null : this.getSecond().equals(other.getSecond()));
+	}
+
+	@Override
+	public T getKey()
+	{
+		return this.getFirst();
+	}
+
+	@Override
+	public U getValue()
+	{
+		return this.getSecond();
+	}
+
+	@Override
+	public U setValue(U arg0)
+	{
+		throw new RuntimeException("Cannot set value of an immutable pair");
 	}
 
 }
