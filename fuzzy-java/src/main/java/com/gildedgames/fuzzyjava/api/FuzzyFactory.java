@@ -1,9 +1,10 @@
 package com.gildedgames.fuzzyjava.api;
 
+import com.gildedgames.fuzzyjava.api.functions.FFunctionOperations;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
-import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
+import com.gildedgames.fuzzyjava.api.sets.FSetMut;
 import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 
@@ -16,17 +17,17 @@ import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 public interface FuzzyFactory
 {
 
-	<E> FSetDiscr<E> createDiscreteSet();
+	<E> FSetMut<E> createMutableSet();
 
-	<E> FSetDiscr<E> createDiscreteSet(int capacity);
+	<E> FSetMut<E> createMutableSet(int capacity);
 
-	<E> FSetDiscr<E> createDiscreteSet(FSetDiscr<E> set);
+	<E> FSetMut<E> createMutableSet(FSetMut<E> set);
 
-	<T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation();
+	<T1, T2> FRelationMut<T1, T2> createMutableRelation();
 
-	<T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation(int capacity);
+	<T1, T2> FRelationMut<T1, T2> createMutableRelation(int capacity);
 
-	<T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation(FRelationSet<? extends T1, ? extends T2> relation);
+	<T1, T2> FRelationMut<T1, T2> createMutableRelation(FRelationSet<? extends T1, ? extends T2> relation);
 
 	FSet<Integer> createVector(float[] array);
 
@@ -35,5 +36,7 @@ public interface FuzzyFactory
 	FSetOperations createSetOperations();
 
 	FRelationOperations createRelationOperations();
+
+	FFunctionOperations createFunctionOperations();
 
 }

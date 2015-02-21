@@ -1,4 +1,4 @@
-package com.gildedgames.fuzzyjava.api;
+package com.gildedgames.fuzzyjava.api.functions;
 
 public interface FFunction<E>
 {

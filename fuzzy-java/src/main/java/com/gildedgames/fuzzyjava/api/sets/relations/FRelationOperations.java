@@ -13,6 +13,19 @@ public interface FRelationOperations
 
 	<E> boolean isTransitive(FRelationSet<E, E> relation);
 
+	<E> boolean isTolerance(FRelationSet<E, E> relation);
+
+	<E> boolean isEquivalence(FRelationSet<E, E> relation);
+
+	/**
+	 * Transforms a tolerance relation into
+	 * an equivalence relation by repeatedly
+	 * applying composition.
+	 */
+	<E> FRelationSet<E, E> toEquivalence(FRelationSet<E, E> toleranceRelation);
+
 	<T1, T2> FRelation<T1, T1> cosineAmplitude(FRelationSet<T1, T2> matrix);
+
+	<T1, T2> FRelation<T1, T1> maxMin(FRelationSet<T1, T2> matrix);
 
 }

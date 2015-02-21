@@ -2,7 +2,7 @@ package com.gildedgames.fuzzyjava.api.sets.relations;
 
 import java.util.Map.Entry;
 
-import com.gildedgames.fuzzyjava.api.FFunction;
+import com.gildedgames.fuzzyjava.api.functions.FFunction;
 
 /**
  * Denotes a relation between two universes, which contain

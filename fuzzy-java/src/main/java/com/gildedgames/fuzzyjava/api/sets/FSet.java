@@ -2,7 +2,7 @@ package com.gildedgames.fuzzyjava.api.sets;
 
 import java.util.Map.Entry;
 
-import com.gildedgames.fuzzyjava.api.FFunction;
+import com.gildedgames.fuzzyjava.api.functions.FFunction;
 
 /**
  *  A set is an iterator over a set of pairs from 

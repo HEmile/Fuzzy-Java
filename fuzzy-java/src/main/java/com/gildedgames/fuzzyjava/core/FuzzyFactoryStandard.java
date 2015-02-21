@@ -1,12 +1,14 @@
 package com.gildedgames.fuzzyjava.core;
 
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
+import com.gildedgames.fuzzyjava.api.functions.FFunctionOperations;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
-import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
+import com.gildedgames.fuzzyjava.api.sets.FSetMut;
 import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
+import com.gildedgames.fuzzyjava.core.functions.StandardFunctionOperations;
 import com.gildedgames.fuzzyjava.core.matrices.ArrayFVector;
 import com.gildedgames.fuzzyjava.core.matrices.HashFVector;
 import com.gildedgames.fuzzyjava.core.sets.HashFSetDiscrete;
@@ -18,37 +20,37 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 {
 
 	@Override
-	public <E> FSetDiscr<E> createDiscreteSet()
+	public <E> FSetMut<E> createMutableSet()
 	{
 		return new HashFSetDiscrete<E>();
 	}
 
 	@Override
-	public <E> FSetDiscr<E> createDiscreteSet(int capacity)
+	public <E> FSetMut<E> createMutableSet(int capacity)
 	{
 		return new HashFSetDiscrete<E>(capacity);
 	}
 
 	@Override
-	public <E> FSetDiscr<E> createDiscreteSet(FSetDiscr<E> set)
+	public <E> FSetMut<E> createMutableSet(FSetMut<E> set)
 	{
 		return new HashFSetDiscrete<E>(set);
 	}
 
 	@Override
-	public <T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation()
+	public <T1, T2> FRelationMut<T1, T2> createMutableRelation()
 	{
 		return new HashFRelation<T1, T2>();
 	}
 
 	@Override
-	public <T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation(int capacity)
+	public <T1, T2> FRelationMut<T1, T2> createMutableRelation(int capacity)
 	{
 		return new HashFRelation<T1, T2>(capacity);
 	}
 
 	@Override
-	public <T1, T2> FRelationDiscr<T1, T2> createDiscreteRelation(FRelationSet<? extends T1, ? extends T2> relation)
+	public <T1, T2> FRelationMut<T1, T2> createMutableRelation(FRelationSet<? extends T1, ? extends T2> relation)
 	{
 		return new HashFRelation<T1, T2>(relation);
 	}
@@ -75,6 +77,12 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	public <E> FSet<E> createVector(FSet<E> set)
 	{
 		return new HashFVector<E>(set);
+	}
+
+	@Override
+	public FFunctionOperations createFunctionOperations()
+	{
+		return new StandardFunctionOperations();
 	}
 
 }
