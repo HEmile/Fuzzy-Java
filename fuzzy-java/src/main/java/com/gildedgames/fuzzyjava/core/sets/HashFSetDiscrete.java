@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.gildedgames.fuzzyjava.api.sets.FSetDiscr;
+import com.gildedgames.fuzzyjava.api.sets.FSetMut;
 import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
 
 /**
@@ -16,7 +16,7 @@ import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
  * the theory as closely as possible.
  * @author Emile
  */
-public class HashFSetDiscrete<E> implements FSetDiscr<E>
+public class HashFSetDiscrete<E> implements FSetMut<E>
 {
 
 	private final Map<E, Float> map;
@@ -31,7 +31,7 @@ public class HashFSetDiscrete<E> implements FSetDiscr<E>
 		this.map = new HashMap<E, Float>(initialCapacity);
 	}
 
-	public HashFSetDiscrete(FSetDiscr<? extends E> set)
+	public HashFSetDiscrete(FSetMut<? extends E> set)
 	{
 		this.map = new HashMap<E, Float>(set.size());
 		this.addAll(set);
@@ -86,13 +86,13 @@ public class HashFSetDiscrete<E> implements FSetDiscr<E>
 			return true;
 		}
 
-		if (obj instanceof FSetDiscr)
+		if (obj instanceof FSetMut)
 		{
 			final FSetOperations operations = new StandardSetOperations();
 			try
 			{
 				@SuppressWarnings("unchecked")
-				final FSetDiscr<E> set = (FSetDiscr<E>) obj;
+				final FSetMut<E> set = (FSetMut<E>) obj;
 				return operations.contains(this, set) && operations.contains(set, this);
 			}
 			catch (final ClassCastException c)
@@ -104,7 +104,7 @@ public class HashFSetDiscrete<E> implements FSetDiscr<E>
 	}
 
 	@Override
-	public void addAll(FSetDiscr<? extends E> fuzzySet)
+	public void addAll(FSetMut<? extends E> fuzzySet)
 	{
 		for (final Entry<? extends E, Float> entry : fuzzySet)
 		{

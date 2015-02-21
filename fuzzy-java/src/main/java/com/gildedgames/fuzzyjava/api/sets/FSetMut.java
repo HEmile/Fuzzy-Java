@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * A set where you can freely add and
+ * A mutable set where you can freely add and
  * remove elements from it after it is
  * created. 
  * @author Emile
  */
-public interface FSetDiscr<E> extends FSet<E>
+public interface FSetMut<E> extends FSet<E>
 {
 
 	/**
@@ -22,7 +22,7 @@ public interface FSetDiscr<E> extends FSet<E>
 	 */
 	void add(E object, float membership);
 
-	void addAll(FSetDiscr<? extends E> fuzzySet);
+	void addAll(FSetMut<? extends E> fuzzySet);
 
 	/**
 	 * Adds all elements from the crisp set to

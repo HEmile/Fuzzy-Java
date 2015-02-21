@@ -3,7 +3,7 @@ package com.gildedgames.fuzzyjava.core.sets.relations;
 import java.util.Map.Entry;
 
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationDiscr;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 
@@ -13,7 +13,7 @@ public class StandardRelationOperations implements FRelationOperations
 	@Override
 	public <T1, T2, T3> FRelationSet<T1, T3> maxMinComposition(FRelationSet<T1, T2> relation1, FRelationSet<T2, T3> relation2)
 	{
-		final FRelationDiscr<T1, T3> newRelation = new HashFRelation<T1, T3>();
+		final FRelationMut<T1, T3> newRelation = new HashFRelation<T1, T3>();
 
 		for (final Entry<Entry<T1, T2>, Float> entrya : relation1)
 		{
@@ -46,7 +46,7 @@ public class StandardRelationOperations implements FRelationOperations
 	@Override
 	public <T1, T2, T3> FRelationSet<T1, T3> maxProductComposition(FRelationSet<T1, T2> relation1, FRelationSet<T2, T3> relation2)
 	{
-		final FRelationDiscr<T1, T3> newRelation = new HashFRelation<T1, T3>();
+		final FRelationMut<T1, T3> newRelation = new HashFRelation<T1, T3>();
 
 		for (final Entry<Entry<T1, T2>, Float> entrya : relation1)
 		{
@@ -141,6 +141,33 @@ public class StandardRelationOperations implements FRelationOperations
 	}
 
 	@Override
+	public <E> boolean isTolerance(FRelationSet<E, E> relation)
+	{
+		return this.isReflexive(relation) && this.isSymmetric(relation);
+	}
+
+	@Override
+	public <E> boolean isEquivalence(FRelationSet<E, E> relation)
+	{
+		return this.isTolerance(relation) && this.isTransitive(relation);
+	}
+
+	@Override
+	public <E> FRelationSet<E, E> toEquivalence(FRelationSet<E, E> toleranceRelation)
+	{
+		if (!this.isTolerance(toleranceRelation))
+		{
+			throw new IllegalArgumentException("Expected a tolerance relation, but it wasn't");
+		}
+		FRelationSet<E, E> toEquivalence = toleranceRelation;
+		while (!this.isEquivalence(toEquivalence))
+		{
+			toEquivalence = this.maxMinComposition(toEquivalence, toleranceRelation);
+		}
+		return toleranceRelation;
+	}
+
+	@Override
 	public <T1, T2> FRelation<T1, T1> cosineAmplitude(FRelationSet<T1, T2> matrix)
 	{
 		if (matrix == null)
@@ -148,7 +175,7 @@ public class StandardRelationOperations implements FRelationOperations
 			return new HashFRelation<T1, T1>(0);
 		}
 		final int n = matrix.width();
-		final FRelationDiscr<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
+		final FRelationMut<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
 		for (final T1 i : matrix.universe1())
 		{
 			for (final T1 j : matrix.universe1())
@@ -168,6 +195,36 @@ public class StandardRelationOperations implements FRelationOperations
 				dotProduct = Math.abs(dotProduct);
 				final float nom = (float) Math.sqrt(sum1 * sum2);//TODO: invalid cast?
 				relation.add(i, j, dotProduct / nom);
+			}
+		}
+
+		return relation;
+	}
+
+	@Override
+	public <T1, T2> FRelation<T1, T1> maxMin(FRelationSet<T1, T2> matrix)
+	{
+		if (matrix == null)
+		{
+			return new HashFRelation<T1, T1>(0);
+		}
+		final int n = matrix.width();
+		final FRelationMut<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
+		for (final T1 i : matrix.universe1())
+		{
+			for (final T1 j : matrix.universe1())
+			{
+				float sum1 = 0.0f;
+				float sum2 = 0.0f;
+				for (final T2 k : matrix.universe2())
+				{
+					final float value1 = matrix.strengthOfRelation(i, k);
+					final float value2 = matrix.strengthOfRelation(j, k);
+
+					sum1 += Math.min(value1, value2);
+					sum2 += Math.max(value1, value2);
+				}
+				relation.add(i, j, sum1 / sum2);
 			}
 		}
 
