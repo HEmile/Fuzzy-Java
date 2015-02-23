@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
-import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
+import com.gildedgames.fuzzyjava.api.sets.FSetOps;
 
 /**
  * Implementation of a discrete fuzzy set using the most common mathematical
@@ -16,22 +16,22 @@ import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
  * the theory as closely as possible.
  * @author Emile
  */
-public class HashFSetDiscrete<E> implements FSetMut<E>
+public class HashFSetMut<E> implements FSetMut<E>
 {
 
 	private final Map<E, Float> map;
 
-	public HashFSetDiscrete()
+	public HashFSetMut()
 	{
 		this.map = new HashMap<E, Float>();
 	}
 
-	public HashFSetDiscrete(int initialCapacity)
+	public HashFSetMut(int initialCapacity)
 	{
 		this.map = new HashMap<E, Float>(initialCapacity);
 	}
 
-	public HashFSetDiscrete(FSetMut<? extends E> set)
+	public HashFSetMut(FSetMut<? extends E> set)
 	{
 		this.map = new HashMap<E, Float>(set.size());
 		this.addAll(set);
@@ -88,7 +88,7 @@ public class HashFSetDiscrete<E> implements FSetMut<E>
 
 		if (obj instanceof FSetMut)
 		{
-			final FSetOperations operations = new StandardSetOperations();
+			final FSetOps operations = new StandardSetOperations();
 			try
 			{
 				@SuppressWarnings("unchecked")

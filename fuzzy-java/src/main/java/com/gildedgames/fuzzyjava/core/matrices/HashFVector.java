@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 
@@ -47,6 +48,12 @@ public class HashFVector<E> implements FSet<E>
 	public Iterator<Entry<E, Float>> iterator()
 	{
 		return this.map.entrySet().iterator();
+	}
+
+	@Override
+	public Set<E> universe()
+	{
+		return this.map.keySet();
 	}
 
 }

@@ -7,6 +7,10 @@ import com.gildedgames.fuzzyjava.api.functions.FFunction;
  * that has membership 1.0 on the value
  * called point, and has tails around it 
  * that linearly go from 0 to that point. 
+ * 
+ * Tip: Extend this function and implement
+ * FCont with the type you want to use
+ * it in consequents of rules.
  * @author Emile
  *
  */

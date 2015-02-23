@@ -1,7 +1,6 @@
 package com.gildedgames.fuzzyjava.api.sets;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * A mutable set where you can freely add and
@@ -38,12 +37,6 @@ public interface FSetMut<E> extends FSet<E>
 	 * @returns The membership value associated  
 	 */
 	float remove(E object);
-
-	/**
-	 * Returns all objects in the set even if their membership
-	 * is 0.0
-	 */
-	Set<E> universe();
 
 	/**
 	 * Completely empties the set.

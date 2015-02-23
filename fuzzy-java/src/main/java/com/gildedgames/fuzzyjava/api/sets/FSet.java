@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.api.sets;
 
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
 
@@ -22,4 +23,10 @@ public interface FSet<E> extends FFunction<E>, Iterable<Entry<E, Float>>
 	 * Returns the amount of elements in the set
 	 */
 	int size();
+
+	/**
+	 * Returns all objects in the set even if their membership
+	 * is 0.0
+	 */
+	Set<E> universe();
 }

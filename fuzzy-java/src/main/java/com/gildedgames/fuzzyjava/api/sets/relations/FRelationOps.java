@@ -1,6 +1,6 @@
 package com.gildedgames.fuzzyjava.api.sets.relations;
 
-public interface FRelationOperations
+public interface FRelationOps
 {
 
 	<T1, T2, T3> FRelationSet<T1, T3> maxMinComposition(FRelationSet<T1, T2> relation1, FRelationSet<T2, T3> relation2);

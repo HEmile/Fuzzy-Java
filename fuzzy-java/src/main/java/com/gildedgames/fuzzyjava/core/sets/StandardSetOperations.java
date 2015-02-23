@@ -7,18 +7,19 @@ import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
-import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
+import com.gildedgames.fuzzyjava.api.sets.FSetOps;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 import com.gildedgames.fuzzyjava.core.sets.relations.HashFRelation;
 
-public class StandardSetOperations implements FSetOperations
+public class StandardSetOperations implements FSetOps
 {
 
 	@Override
 	public <E> FSet<E> complement(FSet<E> set)
 	{
-		final FSetMut<E> complement = new HashFSetDiscrete<E>(set.size());
+		final FSetMut<E> complement = new HashFSetMut<E>(set.size());
 		for (final Entry<E, Float> entry : set)
 		{
 			complement.add(entry.getKey(), 1.0f - entry.getValue());
@@ -27,10 +28,10 @@ public class StandardSetOperations implements FSetOperations
 	}
 
 	@Override
-	public <E> FSet<E> union(FSet<E> set1, FSet<? extends E> set2)
+	public <E> FSet<E> union(FSet<? extends E> set1, FSet<? extends E> set2)
 	{
-		final FSetMut<E> union = new HashFSetDiscrete<E>(set1.size());
-		for (final Entry<E, Float> entry : set1)
+		final FSetMut<E> union = new HashFSetMut<E>(set1.size());
+		for (final Entry<? extends E, Float> entry : set1)
 		{
 			union.add(entry.getKey(), entry.getValue());
 		}
@@ -51,7 +52,7 @@ public class StandardSetOperations implements FSetOperations
 	@Override
 	public <E> FSet<E> intersection(FSet<E> set1, FSet<? extends E> set2)
 	{
-		final FSetMut<E> intersection = new HashFSetDiscrete<E>(set1.size());
+		final FSetMut<E> intersection = new HashFSetMut<E>(set1.size());
 		for (final Entry<? extends E, Float> entry : set2)
 		{
 			final E element = entry.getKey();
@@ -139,4 +140,54 @@ public class StandardSetOperations implements FSetOperations
 		return crispSet;
 	}
 
+	@Override
+	public <T1, T2> FRelation<T1, T2> ifThenStrength(FSet<T1> theIf, FSet<T2> theThen)
+	{
+		final FRelationMut<T1, T2> relation = new HashFRelation<T1, T2>(theIf.size() * theThen.size());
+		for (final T1 x : theIf.universe())
+		{
+			for (final T2 y : theThen.universe())
+			{
+				final float membershipX = theIf.membershipOf(x);
+				final float membershipY = theThen.membershipOf(y);
+				relation.add(x, y, Math.max(Math.min(membershipX, membershipY), 1.0f - membershipX));
+			}
+		}
+		return relation;
+	}
+
+	@Override
+	public <T1, T2> FRelation<T1, T2> ifThenElseStrength(FSet<T1> theIf, FSet<T2> theThen, FSet<T2> theElse)
+	{
+		final FRelationMut<T1, T2> relation = new HashFRelation<T1, T2>(theIf.size() * theThen.size());
+		for (final T1 x : theIf.universe())
+		{
+			for (final T2 y : theThen.universe())
+			{
+				final float membershipX = theIf.membershipOf(x);
+				final float membershipThenY = theThen.membershipOf(y);
+				final float membershipElseY = theElse.membershipOf(y);
+				final float ante = Math.min(membershipX, membershipThenY);
+				final float conse = Math.min(1 - membershipX, membershipElseY);
+				relation.add(x, y, Math.max(ante, conse));
+			}
+		}
+		return relation;
+	}
+
+	@Override
+	public <T1, T2> FSet<T2> composition(FSet<T1> set, FRelationSet<T1, T2> relation)
+	{
+		final FSetMut<T2> toReturn = new HashFSetMut<T2>(relation.length());
+		for (final T2 j : relation.universe2())
+		{
+			float maxvalue = 0.0f;
+			for (final T1 i : set.universe())
+			{
+				final float minvalue = Math.min(set.membershipOf(i), relation.strengthOfRelation(i, j));
+				maxvalue = Math.max(maxvalue, minvalue);
+			}
+		}
+		return toReturn;
+	}
 }

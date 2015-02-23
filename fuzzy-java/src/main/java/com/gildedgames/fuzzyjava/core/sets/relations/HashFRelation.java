@@ -12,7 +12,7 @@ import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
-import com.gildedgames.fuzzyjava.core.sets.HashFSetDiscrete;
+import com.gildedgames.fuzzyjava.core.sets.HashFSetMut;
 import com.gildedgames.fuzzyjava.util.Pair;
 
 public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
@@ -157,7 +157,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public FSet<T2> getColumn(T1 i)
 	{
-		final FSetMut<T2> set = new HashFSetDiscrete<T2>(this.width());
+		final FSetMut<T2> set = new HashFSetMut<T2>(this.width());
 		for (final T2 j : this.universe2)
 		{
 			set.add(j, this.strengthOfRelation(j, i));
@@ -168,7 +168,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public FSet<T1> getRow(T2 j)
 	{
-		final FSetMut<T1> set = new HashFSetDiscrete<T1>(this.width());
+		final FSetMut<T1> set = new HashFSetMut<T1>(this.width());
 		for (final T1 i : this.universe1)
 		{
 			set.add(i, this.strengthOfRelation(i, j));

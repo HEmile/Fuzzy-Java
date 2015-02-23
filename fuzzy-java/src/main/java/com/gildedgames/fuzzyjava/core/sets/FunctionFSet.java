@@ -1,8 +1,8 @@
 package com.gildedgames.fuzzyjava.core.sets;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
@@ -13,9 +13,9 @@ public class FunctionFSet<E> implements FSet<E>
 
 	private final FFunction<E> function;
 
-	private final Collection<E> elements;
+	private final Set<E> elements;
 
-	public FunctionFSet(FFunction<E> function, Collection<E> elements)
+	public FunctionFSet(FFunction<E> function, Set<E> elements)
 	{
 		this.function = function;
 		this.elements = elements;
@@ -66,6 +66,12 @@ public class FunctionFSet<E> implements FSet<E>
 	public int size()
 	{
 		return this.elements.size();
+	}
+
+	@Override
+	public Set<E> universe()
+	{
+		return this.elements;
 	}
 
 }

@@ -1,13 +1,6 @@
 package com.gildedgames.fuzzyjava.api.evaluation;
 
-import java.util.Collection;
-import java.util.Map;
-
-import com.gildedgames.fuzzyjava.api.evaluation.proposition.IVariable;
-import com.gildedgames.fuzzyjava.api.evaluation.proposition.Proposition;
-import com.gildedgames.fuzzyjava.api.functions.FFunction;
-
-public interface IRule
+public interface IRule<E>
 {
 	/**
 	 * Evaluate the proposition in the 
@@ -18,31 +11,9 @@ public interface IRule
 	 * the Truth value of the proposition
 	 * given the environment.
 	 */
-	float evaluateAntecedent(Collection<IVariable<?>> environment);
+	float evaluateAntecedent(E parameter);
 
-	/**
-	 * Evaluate the consequent given the  
-	 * truth value of the result. 
-	 * 
-	 * Returns a map from variable name
-	 * to function float -> truth.
-	 * 
-	 * This function is the membership
-	 * function for the different 
-	 * consequents.
-	 */
-	Map<FFunction<Float>, String> evaluateConsequents(float truth);
+	FFuncAntecedent<E> getAntecedent();
 
-	Collection<String> variablesInAntecedent();
-
-	/**
-	 * Returns the variable names used
-	 * in the consequent of the rule.
-	 * Used for backwards chaining
-	 */
-	Collection<String> variablesInConsequent();
-
-	Proposition getAntecedent();
-
-	Collection<FFunction<Float>> getConsequents();
+	FFuncConsequent<E> getConsequent();
 }

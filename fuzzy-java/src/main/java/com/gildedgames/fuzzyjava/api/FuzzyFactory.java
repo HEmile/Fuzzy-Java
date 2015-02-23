@@ -1,11 +1,13 @@
 package com.gildedgames.fuzzyjava.api;
 
-import com.gildedgames.fuzzyjava.api.functions.FFunctionOperations;
+import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
+import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
+import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
-import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
+import com.gildedgames.fuzzyjava.api.sets.FSetOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 
 /**
@@ -33,10 +35,14 @@ public interface FuzzyFactory
 
 	<E> FSet<E> createVector(FSet<E> set);
 
-	FSetOperations createSetOperations();
+	FSetOps createSetOperations();
 
-	FRelationOperations createRelationOperations();
+	FRelationOps createRelationOperations();
 
-	FFunctionOperations createFunctionOperations();
+	FFunctionOps createFunctionOperations();
+
+	IPropBuilder createPropFunctionBuilder();
+
+	IRuleSet createRuleSet();
 
 }

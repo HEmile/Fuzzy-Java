@@ -1,10 +1,13 @@
 package com.gildedgames.fuzzyjava.core.matrices;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.sets.FSet;
+import com.gildedgames.fuzzyjava.util.CollectionHelper;
 import com.gildedgames.fuzzyjava.util.MutablePair;
 import com.gildedgames.fuzzyjava.util.Pair;
 
@@ -67,6 +70,12 @@ public class ArrayFVector implements FSet<Integer>
 	public int size()
 	{
 		return this.array.length;
+	}
+
+	@Override
+	public Set<Integer> universe()
+	{
+		return new HashSet<Integer>(CollectionHelper.rangeTo(this.size()));
 	}
 
 }

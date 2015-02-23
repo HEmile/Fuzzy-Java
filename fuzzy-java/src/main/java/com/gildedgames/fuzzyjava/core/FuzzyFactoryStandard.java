@@ -1,17 +1,21 @@
 package com.gildedgames.fuzzyjava.core;
 
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
-import com.gildedgames.fuzzyjava.api.functions.FFunctionOperations;
+import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
+import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
+import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
-import com.gildedgames.fuzzyjava.api.sets.FSetOperations;
+import com.gildedgames.fuzzyjava.api.sets.FSetOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
-import com.gildedgames.fuzzyjava.core.functions.StandardFunctionOperations;
+import com.gildedgames.fuzzyjava.core.evaluation.FuncPropBuilder;
+import com.gildedgames.fuzzyjava.core.evaluation.RuleSet;
+import com.gildedgames.fuzzyjava.core.functions.StandardFunctionOps;
 import com.gildedgames.fuzzyjava.core.matrices.ArrayFVector;
 import com.gildedgames.fuzzyjava.core.matrices.HashFVector;
-import com.gildedgames.fuzzyjava.core.sets.HashFSetDiscrete;
+import com.gildedgames.fuzzyjava.core.sets.HashFSetMut;
 import com.gildedgames.fuzzyjava.core.sets.StandardSetOperations;
 import com.gildedgames.fuzzyjava.core.sets.relations.HashFRelation;
 import com.gildedgames.fuzzyjava.core.sets.relations.StandardRelationOperations;
@@ -22,19 +26,19 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	@Override
 	public <E> FSetMut<E> createMutableSet()
 	{
-		return new HashFSetDiscrete<E>();
+		return new HashFSetMut<E>();
 	}
 
 	@Override
 	public <E> FSetMut<E> createMutableSet(int capacity)
 	{
-		return new HashFSetDiscrete<E>(capacity);
+		return new HashFSetMut<E>(capacity);
 	}
 
 	@Override
 	public <E> FSetMut<E> createMutableSet(FSetMut<E> set)
 	{
-		return new HashFSetDiscrete<E>(set);
+		return new HashFSetMut<E>(set);
 	}
 
 	@Override
@@ -56,13 +60,13 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	}
 
 	@Override
-	public FSetOperations createSetOperations()
+	public FSetOps createSetOperations()
 	{
 		return new StandardSetOperations();
 	}
 
 	@Override
-	public FRelationOperations createRelationOperations()
+	public FRelationOps createRelationOperations()
 	{
 		return new StandardRelationOperations();
 	}
@@ -80,9 +84,21 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	}
 
 	@Override
-	public FFunctionOperations createFunctionOperations()
+	public FFunctionOps createFunctionOperations()
 	{
-		return new StandardFunctionOperations();
+		return new StandardFunctionOps();
+	}
+
+	@Override
+	public IRuleSet createRuleSet()
+	{
+		return new RuleSet();
+	}
+
+	@Override
+	public IPropBuilder createPropFunctionBuilder()
+	{
+		return new FuncPropBuilder();
 	}
 
 }

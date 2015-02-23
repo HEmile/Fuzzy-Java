@@ -4,10 +4,10 @@ import java.util.Map.Entry;
 
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
-import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOperations;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 
-public class StandardRelationOperations implements FRelationOperations
+public class StandardRelationOperations implements FRelationOps
 {
 
 	@Override

@@ -3,8 +3,9 @@ package com.gildedgames.fuzzyjava.api.sets;
 import java.util.Collection;
 
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelation;
+import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 
-public interface FSetOperations
+public interface FSetOps
 {
 	/**
 	 * Returns the complement of the set. The implementation
@@ -19,7 +20,7 @@ public interface FSetOperations
 	 * usually the maximum value of the membership value
 	 * of each element.
 	 */
-	<E> FSet<E> union(FSet<E> set1, FSet<? extends E> set2);
+	<E> FSet<E> union(FSet<? extends E> set1, FSet<? extends E> set2);
 
 	/**
 	 * Returns the intersection between this set and the given.
@@ -40,6 +41,12 @@ public interface FSetOperations
 	<E> Collection<E> alphaCut(FSet<E> set, float alpha);
 
 	<E> Collection<E> cutAllZero(FSet<E> set);
+
+	<T1, T2> FRelation<T1, T2> ifThenStrength(FSet<T1> theIf, FSet<T2> theThen);
+
+	<T1, T2> FRelation<T1, T2> ifThenElseStrength(FSet<T1> theIf, FSet<T2> theThen, FSet<T2> theElse);
+
+	<T1, T2> FSet<T2> composition(FSet<T1> set, FRelationSet<T1, T2> relation);
 
 	<E> float getHeight(FSet<E> set);
 

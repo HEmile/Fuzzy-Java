@@ -1,13 +1,16 @@
 package com.gildedgames.fuzzyjava.core.matrices;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
 import com.gildedgames.fuzzyjava.util.CollectionHelper;
 import com.gildedgames.fuzzyjava.util.MutablePair;
+import com.gildedgames.fuzzyjava.util.Pair;
 
 public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 {
@@ -18,12 +21,10 @@ public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 	public ArrayFMatrix(int width, int length)
 	{
 		this.vectors = new FSet[width];
-		for (int i = 0; i < width; i++)
-		{
-			this.vectors[i] = new ArrayFVector(length);
-		}
+
 		this.width = width;
 		this.length = length;
+
 	}
 
 	@Override
@@ -121,6 +122,21 @@ public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 	public Collection<Integer> universe2()
 	{
 		return CollectionHelper.rangeTo(this.length);
+	}
+
+	@Override
+	public Set<Entry<Integer, Integer>> universe()
+	{
+		final Set<Entry<Integer, Integer>> universe = new HashSet<Entry<Integer, Integer>>(this.width * this.length);
+		for (int i = 0; i < this.width; i++)
+		{
+			this.vectors[i] = new ArrayFVector(this.length);
+			for (int j = 0; j < this.length; j++)
+			{
+				universe.add(new Pair<Integer, Integer>(i, j));
+			}
+		}
+		return universe;
 	}
 
 }
