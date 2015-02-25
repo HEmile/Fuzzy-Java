@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.evaluation.FContFunc;
@@ -24,6 +23,7 @@ import com.gildedgames.fuzzyjava.api.evaluation.Parameter;
 import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
 import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
+import com.gildedgames.fuzzyjava.core.Ops;
 import com.gildedgames.fuzzyjava.core.evaluation.exceptions.InvalidNumberOfArgumentsException;
 import com.gildedgames.fuzzyjava.core.functions.StandardFunctionOps;
 import com.gildedgames.fuzzyjava.util.Pair;
@@ -104,7 +104,7 @@ public class RuleSet<E> implements IRuleSet<E>
 			}
 		}
 
-		final PriorityQueue<PriorWrap<Object[]>> queue = new PriorityQueue<>(this.universe.size() * missingParams, this.comparator);
+		final Map<Object[], Float> map = new HashMap<>(this.universe.size());
 		final Set<Entry<Object[], IProperty<E>>> inferred = new HashSet<>(0);
 		for (final IRule<E, E> rule : rules)
 		{
@@ -155,26 +155,39 @@ public class RuleSet<E> implements IRuleSet<E>
 							finalMissing[i] = inMissing;
 						}
 					}
-					this.setInQueue(queue, finalMissing, membership);
+					this.setInMap(map, finalMissing, membership);
 				}
 			}
 			else
 			{
 				final float membership = this.getMembership(antFunc, vars, interpretation, inferred);
-				this.setInQueue(queue, missing, membership);
+				this.setInMap(map, missing, membership);
 			}
 		}
-		return queue.peek().el;
+		Object[] best = null;
+		float bestf = -1.0f;
+		for (final Entry<Object[], Float> entry : map.entrySet())
+		{
+			final float v = entry.getValue();
+			if (v > bestf)
+			{
+				bestf = v;
+				best = entry.getKey();
+			}
+		}
+		return best;
 	}
 
-	private void setInQueue(PriorityQueue<PriorWrap<Object[]>> queue, Object[] params, float membership)
+	private void setInMap(Map<Object[], Float> queue, Object[] params, float membership)
 	{
-		final PriorWrap<Object[]> wrap = new PriorWrap<>(params, membership);
-		if (queue.contains(wrap))
+		if (queue.containsKey(params))
 		{
-			queue.remove(wrap);
+			queue.put(params, Ops.or(membership, queue.get(params)));
 		}
-		queue.add(wrap);
+		else
+		{
+			queue.put(params, membership);
+		}
 	}
 
 	private float inferProperty(IProperty<E> searching, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
