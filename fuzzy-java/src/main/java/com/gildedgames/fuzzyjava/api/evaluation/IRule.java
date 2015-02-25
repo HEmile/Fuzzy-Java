@@ -1,19 +1,9 @@
 package com.gildedgames.fuzzyjava.api.evaluation;
 
-public interface IRule<E>
+public interface IRule<I, O>
 {
-	/**
-	 * Evaluate the proposition in the 
-	 * antecedent with the given environment.
-	 * Be careful to set your envs up right!
-	 * 
-	 * Returns a float that represents
-	 * the Truth value of the proposition
-	 * given the environment.
-	 */
-	float evaluateAntecedent(E parameter);
 
-	FFuncAntecedent<E> getAntecedent();
+	FFuncAnt<I> getAntecedent();
 
-	FFuncConsequent<E> getConsequent();
+	FFuncCons<O> getConsequent();
 }

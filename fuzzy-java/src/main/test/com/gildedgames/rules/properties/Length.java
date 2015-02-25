@@ -8,15 +8,15 @@ import com.gildedgames.fuzzyjava.functions.PositiveSlope;
 import com.gildedgames.rules.Entity;
 import com.gildedgames.rules.Rules;
 
-public class Length implements IProperty<Entity>
+public class Length extends BaseProp
 {
 	public static IProperty<Entity> inst = new Length();
 
-	public static FFuncProp<Entity> isTall = Rules.funcO.toPropFunc(new PositiveSlope(210, 45), inst);
+	public static FFuncProp<Entity> isTall = Rules.b.prop(new PositiveSlope(210, 45), inst);
 
-	public static FFuncProp<Entity> isAverage = Rules.funcO.toPropFunc(new FuzzyNumber(170, 20, 20), inst);
+	public static FFuncProp<Entity> isAverage = Rules.b.prop(new FuzzyNumber(170, 20, 20), inst);
 
-	public static FFuncProp<Entity> isShort = Rules.funcO.toPropFunc(new NegativeSlope(110, 50), inst);
+	public static FFuncProp<Entity> isShort = Rules.b.prop(new NegativeSlope(110, 50), inst);
 
 	@Override
 	public float getMinBound()
@@ -31,15 +31,21 @@ public class Length implements IProperty<Entity>
 	}
 
 	@Override
-	public float convert(Entity element)
-	{
-		return element.length;
-	}
-
-	@Override
 	public String getName()
 	{
 		return "test:length";
+	}
+
+	@Override
+	protected float convert(Entity el)
+	{
+		return el.length;
+	}
+
+	@Override
+	protected void setProperty(Entity el, float value)
+	{
+		el.length = value;
 	}
 
 }

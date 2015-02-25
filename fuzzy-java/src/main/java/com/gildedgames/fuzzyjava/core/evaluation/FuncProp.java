@@ -1,7 +1,11 @@
 package com.gildedgames.fuzzyjava.core.evaluation;
 
+import com.gildedgames.fuzzyjava.api.evaluation.FFuncAnt;
+import com.gildedgames.fuzzyjava.api.evaluation.FFuncCons;
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncProp;
 import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
+import com.gildedgames.fuzzyjava.api.evaluation.Parameter;
+import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
 
 public class FuncProp<E> implements FFuncProp<E>
@@ -18,7 +22,7 @@ public class FuncProp<E> implements FFuncProp<E>
 	}
 
 	@Override
-	public float membershipOf(Float element)
+	public float membershipOfFloat(float element)
 	{
 		return this.func.membershipOf(element);
 	}
@@ -30,9 +34,21 @@ public class FuncProp<E> implements FFuncProp<E>
 	}
 
 	@Override
-	public float membershipOfEl(E element)
+	public float membershipOf(Object[] element)
 	{
-		return this.func.membershipOf(this.property.convert(element));
+		return this.func.membershipOf(this.getProperty().convert(element));
+	}
+
+	@Override
+	public FFuncAnt<E> ant(Parameter... parameters)
+	{
+		return new FuncAnt<E>(this, parameters);
+	}
+
+	@Override
+	public FFuncCons<E> cons(Variable... parameters)
+	{
+		return new FuncCons<E>(this, parameters);
 	}
 
 }

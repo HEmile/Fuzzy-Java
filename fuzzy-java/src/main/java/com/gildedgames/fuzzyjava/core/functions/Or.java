@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.core.functions;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
+import com.gildedgames.fuzzyjava.core.Ops;
 
 public class Or<E> implements FFunction<E>
 {
@@ -15,7 +16,7 @@ public class Or<E> implements FFunction<E>
 	@Override
 	public float membershipOf(E element)
 	{
-		return Math.max(this.function1.membershipOf(element), this.function2.membershipOf(element));
+		return Ops.or(this.function1.membershipOf(element), this.function2.membershipOf(element));
 	}
 
 }

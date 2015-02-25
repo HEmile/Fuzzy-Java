@@ -1,8 +1,8 @@
 package com.gildedgames.fuzzyjava.api.evaluation;
 
-public interface IRuleSet
+public interface IRuleSet<E>
 {
-	<E> void addRule(FFuncAntecedent<E> antecedent, FFuncConsequent<E> consequent);
+	void addRule(FFuncAnt<E> antecedent, FFuncCons<E> consequent);
 
 	/**
 	 * Find the value of the 
@@ -16,6 +16,12 @@ public interface IRuleSet
 	 * which contain the paramater
 	 * of the name searching.
 	 */
-	<E, EI extends E> float valueOf(IProperty<E> searching, EI value);
+	float valueOf(IProperty<E> searching, Object... parameters);
+
+	E[] missing(FFuncProp<E> func, Object... parameters);
+
+	E missingSnd(FFuncProp<E> func, E first);
+
+	E missingFst(FFuncProp<E> func, E second);
 
 }

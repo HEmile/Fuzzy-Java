@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
 import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
 import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
+import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.core.FuzzyFactoryStandard;
 import com.gildedgames.rules.properties.Length;
 import com.gildedgames.rules.properties.Strength;
@@ -14,17 +15,18 @@ public class Rules
 {
 	public static FuzzyFactory factory = new FuzzyFactoryStandard();
 
-	public static IPropBuilder funcO = factory.createPropFunctionBuilder();
+	public static IPropBuilder b = factory.createPropFunctionBuilder();
 
-	public void addRules(IRuleSet ruleSet)
+	public void addRules(IRuleSet<Entity> ruleSet)
 	{
-		ruleSet.addRule(Length.isShort, Strength.isWeak);
-		ruleSet.addRule(Length.isAverage, Strength.isAverage);
-		ruleSet.addRule(Length.isTall, Strength.isStrong);
+		final Variable x = b.createVar();
+		final Variable y = b.createVar();
 
-		ruleSet.addRule(Weight.isSkinny, Strength.isWeak);
-		ruleSet.addRule(Weight.isAverage, Strength.isStrong);
-		ruleSet.addRule(Weight.isFat, Strength.isAverage);
+		ruleSet.addRule(b.and(
+				b.very(Strength.isStrong.ant(x)),
+				Weight.isFat.ant(y)),
+				Length.isAverage.cons(x));
+
 	}
 
 	/**
@@ -34,7 +36,7 @@ public class Rules
 	@Test
 	public void testEvaluateRules()
 	{
-		final IRuleSet ruleSet = factory.createRuleSet();
+		final IRuleSet<Entity> ruleSet = null;//factory.createRuleSet();
 		this.addRules(ruleSet);
 
 		final Entity ent1 = new Entity();

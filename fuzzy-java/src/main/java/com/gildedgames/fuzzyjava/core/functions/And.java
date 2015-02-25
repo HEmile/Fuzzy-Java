@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.core.functions;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
+import com.gildedgames.fuzzyjava.core.Ops;
 
 public class And<E> implements FFunction<E>
 {
@@ -16,7 +17,7 @@ public class And<E> implements FFunction<E>
 	@Override
 	public float membershipOf(E element)
 	{
-		return Math.min(this.function1.membershipOf(element), this.function2.membershipOf(element));
+		return Ops.and(this.function1.membershipOf(element), this.function2.membershipOf(element));
 	}
 
 }

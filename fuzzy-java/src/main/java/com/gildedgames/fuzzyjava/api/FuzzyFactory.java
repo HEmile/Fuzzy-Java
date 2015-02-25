@@ -1,5 +1,7 @@
 package com.gildedgames.fuzzyjava.api;
 
+import java.util.Collection;
+
 import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
 import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
 import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
@@ -43,6 +45,6 @@ public interface FuzzyFactory
 
 	IPropBuilder createPropFunctionBuilder();
 
-	IRuleSet createRuleSet();
+	<E> IRuleSet<E> createRuleSet(Collection<E> universe);
 
 }

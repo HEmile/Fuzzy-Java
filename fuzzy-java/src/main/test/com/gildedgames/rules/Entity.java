@@ -2,11 +2,11 @@ package com.gildedgames.rules;
 
 public class Entity
 {
-	public float length;
+	public float length = -1;
 
-	public float strength;
+	public float strength = -1;
 
-	public float weight;
+	public float weight = -1;
 
 	@Override
 	public String toString()

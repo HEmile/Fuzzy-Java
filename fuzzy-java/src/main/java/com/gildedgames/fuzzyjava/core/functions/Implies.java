@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.core.functions;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
+import com.gildedgames.fuzzyjava.core.Ops;
 
 public class Implies<E> implements FFunction<E>
 {
@@ -15,6 +16,6 @@ public class Implies<E> implements FFunction<E>
 	@Override
 	public float membershipOf(E element)
 	{
-		return Math.max(1.0f - this.function1.membershipOf(element), this.function2.membershipOf(element));
+		return Ops.or(Ops.not(this.function1.membershipOf(element)), this.function2.membershipOf(element));
 	}
 }

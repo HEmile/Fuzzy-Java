@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.core.functions;
 
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
+import com.gildedgames.fuzzyjava.core.Ops;
 
 public class Not<E> implements FFunction<E>
 {
@@ -15,7 +16,7 @@ public class Not<E> implements FFunction<E>
 	@Override
 	public float membershipOf(E element)
 	{
-		return 1.0f - this.function.membershipOf(element);
+		return Ops.not(this.function.membershipOf(element));
 	}
 
 }

@@ -6,7 +6,15 @@ public interface IProperty<E>
 
 	float getMaxBound();
 
-	float convert(E element);
+	float convert(Object... params);
+
+	boolean propertySet(Object... params);
+
+	void setProperty(float value, Object... params);
+
+	Object[] tryInferMissing(Object[] params);
 
 	String getName();
+
+	int arity();
 }

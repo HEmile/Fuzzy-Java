@@ -1,35 +1,29 @@
 package com.gildedgames.fuzzyjava.core.evaluation;
 
-import com.gildedgames.fuzzyjava.api.evaluation.FFuncAntecedent;
-import com.gildedgames.fuzzyjava.api.evaluation.FFuncConsequent;
+import com.gildedgames.fuzzyjava.api.evaluation.FFuncAnt;
+import com.gildedgames.fuzzyjava.api.evaluation.FFuncCons;
 import com.gildedgames.fuzzyjava.api.evaluation.IRule;
 
-public class Rule<E> implements IRule<E>
+public class Rule<I, O> implements IRule<I, O>
 {
-	private final FFuncAntecedent<E> antecedent;
+	private final FFuncAnt<I> antecedent;
 
-	private final FFuncConsequent<E> consequent;
+	private final FFuncCons<O> consequent;
 
-	public Rule(FFuncAntecedent<E> antecedent, FFuncConsequent<E> consequent)
+	public Rule(FFuncAnt<I> antecedent, FFuncCons<O> consequent)
 	{
 		this.antecedent = antecedent;
 		this.consequent = consequent;
 	}
 
 	@Override
-	public float evaluateAntecedent(E parameter)
-	{
-		return this.antecedent.membershipOfEl(parameter);
-	}
-
-	@Override
-	public FFuncAntecedent<E> getAntecedent()
+	public FFuncAnt<I> getAntecedent()
 	{
 		return this.antecedent;
 	}
 
 	@Override
-	public FFuncConsequent<E> getConsequent()
+	public FFuncCons<O> getConsequent()
 	{
 		return this.consequent;
 	}

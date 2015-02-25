@@ -1,5 +1,7 @@
 package com.gildedgames.fuzzyjava.core;
 
+import java.util.Collection;
+
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
 import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
 import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
@@ -90,9 +92,9 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	}
 
 	@Override
-	public IRuleSet createRuleSet()
+	public <E> IRuleSet<E> createRuleSet(Collection<E> universe)
 	{
-		return new RuleSet();
+		return new RuleSet<E>(universe);
 	}
 
 	@Override

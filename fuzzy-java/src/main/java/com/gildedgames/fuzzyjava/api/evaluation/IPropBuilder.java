@@ -4,19 +4,31 @@ import com.gildedgames.fuzzyjava.api.functions.FFunction;
 
 public interface IPropBuilder
 {
-	<E> FFuncAntecedent<E> and(FFuncAntecedent<E> function1, FFuncAntecedent<E> function2);
+	<E> FFuncAnt<E> and(FFuncAnt<E> function1, FFuncAnt<E> function2);
 
-	<E> FFuncAntecedent<E> or(FFuncAntecedent<E> function1, FFuncAntecedent<E> function2);
+	<E> FFuncAnt<E> or(FFuncAnt<E> function1, FFuncAnt<E> function2);
 
-	<E> FFuncAntecedent<E> implies(FFuncAntecedent<E> function1, FFuncAntecedent<E> function2);
+	<E> FFuncAnt<E> implies(FFuncAnt<E> function1, FFuncAnt<E> function2);
 
-	<E> FFuncAntecedent<E> not(FFuncAntecedent<E> function);
+	<E> FFuncAnt<E> not(FFuncAnt<E> function);
 
-	<E> FFuncConsequent<E> notC(FFuncConsequent<E> function);
+	<E> FFuncCons<E> notC(FFuncCons<E> function);
 
-	<E> FFuncAntecedent<E> constant(FFuncAntecedent<E> function, E constant);
+	Parameter constant(Object constant);
 
-	<E> FFuncAntecedent<E> constant(float constant);
+	Variable createVar();
 
-	<E> FFuncProp<E> toPropFunc(FFunction<Float> function, IProperty<E> property);
+	<E> FFuncProp<E> prop(FFunction<Float> function, IProperty<E> property);
+
+	<E> FFuncAnt<E> very(FFuncAnt<E> function);
+
+	<E> FFuncAnt<E> slightly(FFuncAnt<E> function);
+
+	<E> FFuncAnt<E> ant(FFunction<E> function, IProperty<E> property, Parameter param);
+
+	<E> FFuncAnt<E> ant(FFunction<E> function, Parameter param);
+
+	<E> FFuncAnt<E> ant(FFunction<Object[]> function, IProperty<E> property, Parameter... param);
+
+	<E> FFuncAnt<E> ant(FFunction<Object[]> function, Parameter... param);
 }
