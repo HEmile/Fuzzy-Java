@@ -18,10 +18,6 @@ public interface IRuleSet<E>
 	 */
 	float valueOf(IProperty<E> searching, Object... parameters);
 
-	E[] missing(FFuncProp<E> func, Object... parameters);
-
-	E missingSnd(FFuncProp<E> func, E first);
-
-	E missingFst(FFuncProp<E> func, E second);
+	Object[] missing(FFuncProp<E> func, Object... parameters);
 
 }

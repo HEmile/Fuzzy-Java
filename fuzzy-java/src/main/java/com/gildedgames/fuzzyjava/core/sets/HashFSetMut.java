@@ -28,12 +28,12 @@ public class HashFSetMut<E> implements FSetMut<E>
 
 	public HashFSetMut(int initialCapacity)
 	{
-		this.map = new HashMap<E, Float>(initialCapacity);
+		this.map = new HashMap<>(initialCapacity);
 	}
 
 	public HashFSetMut(FSetMut<? extends E> set)
 	{
-		this.map = new HashMap<E, Float>(set.size());
+		this.map = new HashMap<>(set.size());
 		this.addAll(set);
 	}
 

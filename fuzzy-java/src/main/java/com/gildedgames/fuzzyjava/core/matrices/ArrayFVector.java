@@ -55,7 +55,7 @@ public class ArrayFVector implements FSet<Integer>
 			{
 				if (this.pair == null)
 				{
-					this.pair = new MutablePair<Integer, Float>(0, ArrayFVector.this.membershipOf(0));
+					this.pair = new MutablePair<>(0, ArrayFVector.this.membershipOf(0));
 					return this.pair;
 				}
 				this.pair.firstM++;
@@ -75,7 +75,7 @@ public class ArrayFVector implements FSet<Integer>
 	@Override
 	public Set<Integer> universe()
 	{
-		return new HashSet<Integer>(CollectionHelper.rangeTo(this.size()));
+		return new HashSet<>(CollectionHelper.rangeTo(this.size()));
 	}
 
 }

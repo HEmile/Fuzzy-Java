@@ -1,5 +1,8 @@
 package com.gildedgames.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
@@ -24,7 +27,7 @@ public class Rules
 
 		ruleSet.addRule(b.and(
 				b.very(Strength.isStrong.ant(x)),
-				Weight.isFat.ant(y)),
+				Weight.isFat.ant(x)),
 				Length.isAverage.cons(x));
 
 	}
@@ -36,43 +39,50 @@ public class Rules
 	@Test
 	public void testEvaluateRules()
 	{
-		final IRuleSet<Entity> ruleSet = null;//factory.createRuleSet();
+		final Entity ent1 = new Entity();
+		final Entity ent2 = new Entity();
+		final Entity ent3 = new Entity();
+		final Entity ent4 = new Entity();
+		final Entity ent5 = new Entity();
+		final Entity ent6 = new Entity();
+		final List<Entity> ents = new ArrayList<Entity>();
+		ents.add(ent1);
+		ents.add(ent2);
+		ents.add(ent3);
+		ents.add(ent4);
+		ents.add(ent5);
+		ents.add(ent6);
+		final IRuleSet<Entity> ruleSet = factory.createRuleSet(ents);
 		this.addRules(ruleSet);
 
-		final Entity ent1 = new Entity();
-		ent1.length = 180;
+		ent1.strength = 80;
 		ent1.weight = 70;
-		ent1.strength = ruleSet.valueOf(Strength.inst, ent1);
+		ent1.length = ruleSet.valueOf(Length.inst, ent1);
 		System.out.println(ent1);
 
-		final Entity ent2 = new Entity();
-		ent2.length = 140;
+		ent2.strength = 50;
 		ent2.weight = 110;
-		ent2.strength = ruleSet.valueOf(Strength.inst, ent2);
+		ent2.length = ruleSet.valueOf(Length.inst, ent2);
 		System.out.println(ent2);
 
-		final Entity ent3 = new Entity();
-		ent3.length = 190;
+		ent3.strength = 100;
 		ent3.weight = 50;
-		ent3.strength = ruleSet.valueOf(Strength.inst, ent3);
+		ent3.length = ruleSet.valueOf(Length.inst, ent3);
 		System.out.println(ent3);
 
-		final Entity ent4 = new Entity();
-		ent4.length = 190;
+		ent4.strength = 80f;
 		ent4.weight = 110;
-		ent4.strength = ruleSet.valueOf(Strength.inst, ent4);
+		ent4.length = ruleSet.valueOf(Length.inst, ent4);
 		System.out.println(ent4);
 
-		final Entity ent5 = new Entity();
-		ent5.length = 110;
+		ent5.strength = 40;
 		ent5.weight = 30;
-		ent5.strength = ruleSet.valueOf(Strength.inst, ent5);
+		ent5.length = ruleSet.valueOf(Length.inst, ent5);
 		System.out.println(ent5);
 
-		final Entity ent6 = new Entity();
-		ent6.length = 210;
+		ent6.strength = 100;
 		ent6.weight = 70;
-		ent6.strength = ruleSet.valueOf(Strength.inst, ent6);
+		ent6.length = ruleSet.valueOf(Length.inst, ent6);
 		System.out.println(ent6);
 
 	}

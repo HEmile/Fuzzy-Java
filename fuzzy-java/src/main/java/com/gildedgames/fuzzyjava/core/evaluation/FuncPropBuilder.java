@@ -31,18 +31,20 @@ public class FuncPropBuilder implements IPropBuilder
 	{
 		private final FFuncAnt<E> f1, f2;
 
+		private final Set<Entry<IProperty<E>, Parameter[]>> pWithVars;
+
 		private FuncAntMerge(FFuncAnt<E> f1, FFuncAnt<E> f2)
 		{
 			this.f1 = f1;
 			this.f2 = f2;
+			this.pWithVars = new HashSet<>(this.f1.propertiesWithVars());
+			this.pWithVars.addAll(this.f2.propertiesWithVars());
 		}
 
 		@Override
 		public Set<Entry<IProperty<E>, Parameter[]>> propertiesWithVars()
 		{
-			final Set<Entry<IProperty<E>, Parameter[]>> ret = new HashSet<Entry<IProperty<E>, Parameter[]>>(this.f1.propertiesWithVars());
-			ret.addAll(this.f2.propertiesWithVars());
-			return ret;
+			return this.pWithVars;
 		}
 	}
 
@@ -157,9 +159,9 @@ public class FuncPropBuilder implements IPropBuilder
 			}
 
 			@Override
-			public IProperty<E> getProperty()
+			public FFuncProp<E> getPropFunc()
 			{
-				return function.getProperty();
+				return function.getPropFunc();
 			}
 
 			@Override
@@ -173,12 +175,17 @@ public class FuncPropBuilder implements IPropBuilder
 	@Override
 	public <E> FFuncProp<E> prop(FFunction<Float> function, IProperty<E> property)
 	{
-		return new FuncProp<E>(function, property);
+		return new FuncProp<>(function, property);
 	}
 
 	@Override
 	public <E> FFuncAnt<E> ant(final FFunction<E> function, final IProperty<E> property, final Parameter param)
 	{
+		final Set<Entry<IProperty<E>, Parameter[]>> set = new HashSet<>(1);
+		if (property != null)
+		{
+			set.add(new Pair<>(property, new Parameter[] { param }));
+		}
 		return new FFuncAnt<E>()
 		{
 			@Override
@@ -190,11 +197,6 @@ public class FuncPropBuilder implements IPropBuilder
 			@Override
 			public Set<Entry<IProperty<E>, Parameter[]>> propertiesWithVars()
 			{
-				final Set<Entry<IProperty<E>, Parameter[]>> set = new HashSet<Entry<IProperty<E>, Parameter[]>>(1);
-				if (property != null)
-				{
-					set.add(new Pair<IProperty<E>, Parameter[]>(property, new Parameter[] { param }));
-				}
 				return set;
 			}
 
@@ -215,6 +217,11 @@ public class FuncPropBuilder implements IPropBuilder
 	@Override
 	public <E> FFuncAnt<E> ant(final FFunction<Object[]> function, final IProperty<E> property, final Parameter... param)
 	{
+		final Set<Entry<IProperty<E>, Parameter[]>> set = new HashSet<>();
+		if (property != null)
+		{
+			set.add(new Pair<>(property, param));
+		}
 		return new FFuncAnt<E>()
 		{
 			@Override
@@ -226,11 +233,6 @@ public class FuncPropBuilder implements IPropBuilder
 			@Override
 			public Set<Entry<IProperty<E>, Parameter[]>> propertiesWithVars()
 			{
-				final Set<Entry<IProperty<E>, Parameter[]>> set = new HashSet<Entry<IProperty<E>, Parameter[]>>();
-				if (property != null)
-				{
-					set.add(new Pair<IProperty<E>, Parameter[]>(property, param));
-				}
 				return set;
 			}
 
@@ -253,6 +255,8 @@ public class FuncPropBuilder implements IPropBuilder
 		return this.ant(function, null, param);
 	}
 
+	private static final Map<Variable, ?> emptyMap = new HashMap<>(0);
+
 	@Override
 	public Parameter constant(final Object constant)
 	{
@@ -273,7 +277,7 @@ public class FuncPropBuilder implements IPropBuilder
 			@Override
 			public Map<Variable, ?> tryInferVars(Object paramValue)
 			{
-				return new HashMap<Variable, Object>(0);
+				return FuncPropBuilder.emptyMap;
 			}
 		};
 	}

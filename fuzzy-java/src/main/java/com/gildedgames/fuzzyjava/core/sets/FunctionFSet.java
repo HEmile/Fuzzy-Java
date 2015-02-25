@@ -49,7 +49,7 @@ public class FunctionFSet<E> implements FSet<E>
 				final E element = this.iterator.next();
 				if (this.pair == null)
 				{
-					this.pair = new MutablePair<E, Float>(element, FunctionFSet.this.membershipOf(element));
+					this.pair = new MutablePair<>(element, FunctionFSet.this.membershipOf(element));
 				}
 				else
 				{

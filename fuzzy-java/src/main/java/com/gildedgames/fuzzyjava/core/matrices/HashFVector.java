@@ -16,7 +16,7 @@ public class HashFVector<E> implements FSet<E>
 
 	public HashFVector(FSet<E> set)
 	{
-		this.map = new HashMap<E, Float>(set.size());
+		this.map = new HashMap<>(set.size());
 		for (final Entry<E, Float> entry : set)
 		{
 			this.map.put(entry.getKey(), entry.getValue());
@@ -25,7 +25,7 @@ public class HashFVector<E> implements FSet<E>
 
 	public HashFVector(Collection<E> set)
 	{
-		this.map = new HashMap<E, Float>(set.size());
+		this.map = new HashMap<>(set.size());
 		for (final E entry : set)
 		{
 			this.map.put(entry, 1.0f);

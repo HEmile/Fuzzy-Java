@@ -28,37 +28,37 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	@Override
 	public <E> FSetMut<E> createMutableSet()
 	{
-		return new HashFSetMut<E>();
+		return new HashFSetMut<>();
 	}
 
 	@Override
 	public <E> FSetMut<E> createMutableSet(int capacity)
 	{
-		return new HashFSetMut<E>(capacity);
+		return new HashFSetMut<>(capacity);
 	}
 
 	@Override
 	public <E> FSetMut<E> createMutableSet(FSetMut<E> set)
 	{
-		return new HashFSetMut<E>(set);
+		return new HashFSetMut<>(set);
 	}
 
 	@Override
 	public <T1, T2> FRelationMut<T1, T2> createMutableRelation()
 	{
-		return new HashFRelation<T1, T2>();
+		return new HashFRelation<>();
 	}
 
 	@Override
 	public <T1, T2> FRelationMut<T1, T2> createMutableRelation(int capacity)
 	{
-		return new HashFRelation<T1, T2>(capacity);
+		return new HashFRelation<>(capacity);
 	}
 
 	@Override
 	public <T1, T2> FRelationMut<T1, T2> createMutableRelation(FRelationSet<? extends T1, ? extends T2> relation)
 	{
-		return new HashFRelation<T1, T2>(relation);
+		return new HashFRelation<>(relation);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	@Override
 	public <E> FSet<E> createVector(FSet<E> set)
 	{
-		return new HashFVector<E>(set);
+		return new HashFVector<>(set);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	@Override
 	public <E> IRuleSet<E> createRuleSet(Collection<E> universe)
 	{
-		return new RuleSet<E>(universe);
+		return new RuleSet<>(universe);
 	}
 
 	@Override

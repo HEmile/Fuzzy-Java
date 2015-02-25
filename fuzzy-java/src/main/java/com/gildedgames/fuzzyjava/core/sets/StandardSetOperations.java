@@ -19,7 +19,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <E> FSet<E> complement(FSet<E> set)
 	{
-		final FSetMut<E> complement = new HashFSetMut<E>(set.size());
+		final FSetMut<E> complement = new HashFSetMut<>(set.size());
 		for (final Entry<E, Float> entry : set)
 		{
 			complement.add(entry.getKey(), 1.0f - entry.getValue());
@@ -30,7 +30,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <E> FSet<E> union(FSet<? extends E> set1, FSet<? extends E> set2)
 	{
-		final FSetMut<E> union = new HashFSetMut<E>(set1.size());
+		final FSetMut<E> union = new HashFSetMut<>(set1.size());
 		for (final Entry<? extends E, Float> entry : set1)
 		{
 			union.add(entry.getKey(), entry.getValue());
@@ -52,7 +52,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <E> FSet<E> intersection(FSet<E> set1, FSet<? extends E> set2)
 	{
-		final FSetMut<E> intersection = new HashFSetMut<E>(set1.size());
+		final FSetMut<E> intersection = new HashFSetMut<>(set1.size());
 		for (final Entry<? extends E, Float> entry : set2)
 		{
 			final E element = entry.getKey();
@@ -82,7 +82,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <T1, T2> FRelationSet<T1, T2> cartesian(FSet<T1> set1, FSet<T2> set2)
 	{
-		final FRelationMut<T1, T2> cartesian = new HashFRelation<T1, T2>(set1.size() * set2.size());
+		final FRelationMut<T1, T2> cartesian = new HashFRelation<>(set1.size() * set2.size());
 		for (final Entry<T1, Float> entry1 : set1)
 		{
 			final T1 element1 = entry1.getKey();
@@ -115,7 +115,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <E> Collection<E> alphaCut(FSet<E> set, float alpha)
 	{
-		final Set<E> crispSet = new HashSet<E>((int) (set.size() * alpha));
+		final Set<E> crispSet = new HashSet<>((int) (set.size() * alpha));
 		for (final Entry<E, Float> entry : set)
 		{
 			if (entry.getValue() >= alpha)
@@ -129,7 +129,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <E> Collection<E> cutAllZero(FSet<E> set)
 	{
-		final Set<E> crispSet = new HashSet<E>(set.size() / 2);
+		final Set<E> crispSet = new HashSet<>(set.size() / 2);
 		for (final Entry<E, Float> entry : set)
 		{
 			if (entry.getValue() > 0.0f)
@@ -143,7 +143,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <T1, T2> FRelation<T1, T2> ifThenStrength(FSet<T1> theIf, FSet<T2> theThen)
 	{
-		final FRelationMut<T1, T2> relation = new HashFRelation<T1, T2>(theIf.size() * theThen.size());
+		final FRelationMut<T1, T2> relation = new HashFRelation<>(theIf.size() * theThen.size());
 		for (final T1 x : theIf.universe())
 		{
 			for (final T2 y : theThen.universe())
@@ -159,7 +159,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <T1, T2> FRelation<T1, T2> ifThenElseStrength(FSet<T1> theIf, FSet<T2> theThen, FSet<T2> theElse)
 	{
-		final FRelationMut<T1, T2> relation = new HashFRelation<T1, T2>(theIf.size() * theThen.size());
+		final FRelationMut<T1, T2> relation = new HashFRelation<>(theIf.size() * theThen.size());
 		for (final T1 x : theIf.universe())
 		{
 			for (final T2 y : theThen.universe())
@@ -178,7 +178,7 @@ public class StandardSetOperations implements FSetOps
 	@Override
 	public <T1, T2> FSet<T2> composition(FSet<T1> set, FRelationSet<T1, T2> relation)
 	{
-		final FSetMut<T2> toReturn = new HashFSetMut<T2>(relation.length());
+		final FSetMut<T2> toReturn = new HashFSetMut<>(relation.length());
 		for (final T2 j : relation.universe2())
 		{
 			float maxvalue = 0.0f;

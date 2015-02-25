@@ -2,7 +2,7 @@ package com.gildedgames.fuzzyjava.api.evaluation;
 
 public interface FFuncCons<E> extends FContFunc<E>
 {
-	IProperty<E> getProperty();
+	FFuncProp<E> getPropFunc();
 
 	Variable[] variables();
 }

@@ -3,12 +3,14 @@ package com.gildedgames.fuzzyjava.core.evaluation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import com.gildedgames.fuzzyjava.api.evaluation.FContFunc;
@@ -41,9 +43,18 @@ public class RuleSet<E> implements IRuleSet<E>
 	 */
 	private static final int varInferrenceIterations = 2;
 
+	private final Comparator<PriorWrap<Object[]>> comparator = new Comparator<PriorWrap<Object[]>>()
+	{
+		@Override
+		public int compare(PriorWrap<Object[]> arg0, PriorWrap<Object[]> arg1)
+		{
+			return Float.compare(arg0.value, arg1.value);
+		}
+	};
+
 	public RuleSet(Collection<E> universe)
 	{
-		this.universe = new ArrayList<E>(universe);
+		this.universe = new ArrayList<>(universe);
 	}
 
 	@Override
@@ -55,12 +66,120 @@ public class RuleSet<E> implements IRuleSet<E>
 	@Override
 	public float valueOf(IProperty<E> searching, Object[] value)
 	{
+		if (value.length != searching.arity())
+		{
+			throw new InvalidNumberOfArgumentsException();
+		}
 		return this.inferProperty(searching, value, new HashSet<Entry<Object[], IProperty<E>>>());
+	}
+
+	@Override
+	public Object[] missing(FFuncProp<E> func, Object... parameters)
+	{
+		if (func.getProperty().arity() != parameters.length)
+		{
+			throw new InvalidNumberOfArgumentsException();
+		}
+		final List<IRule<E, E>> rules = new ArrayList<>();
+		for (final IRule<E, E> rule : rules)
+		{
+			final FFuncProp<E> property = rule.getConsequent().getPropFunc();
+			if (property.equals(func))
+			{
+				rules.add(rule);
+			}
+		}
+		int missingParams = 0;
+		final int[] indices = new int[parameters.length];
+		for (int i = 0; i < parameters.length; i++)
+		{
+			if (parameters[i] == null)
+			{
+				indices[i] = missingParams;
+				missingParams++;
+			}
+			else
+			{
+				indices[i] = -1;
+			}
+		}
+
+		final PriorityQueue<PriorWrap<Object[]>> queue = new PriorityQueue<>(this.universe.size() * missingParams, this.comparator);
+		final Set<Entry<Object[], IProperty<E>>> inferred = new HashSet<>(0);
+		for (final IRule<E, E> rule : rules)
+		{
+			final Entry<Map<Variable, Object>, Set<Variable>> entry = this.getInterpretationAndMissingVariables(rule, parameters, inferred);
+			final Map<Variable, Object> interpretation = entry.getKey();
+			final Set<Variable> missingVars = entry.getValue();
+			final FFuncAnt<E> antFunc = rule.getAntecedent();
+			final FFuncCons<E> consFunc = rule.getConsequent();
+			final Variable[] consVariables = consFunc.variables();
+
+			final Object[] missing = new Object[missingParams];
+			int count = 0;
+			for (int i = 0; i < parameters.length; i++)
+			{
+				final Variable variable = consVariables[i];
+				final Object param = parameters[i];
+				if (param == null)
+				{
+					if (interpretation.containsKey(variable))
+					{
+						missing[count] = interpretation.get(variable);
+					}
+					else
+					{
+						missing[count] = variable;
+					}
+					count++;
+				}
+			}
+			final Set<Entry<IProperty<E>, Parameter[]>> vars = antFunc.propertiesWithVars();
+
+			if (!missingVars.isEmpty())
+			{
+				//Iterate over all possible interpretation given the variables that ARE known.
+				for (final Map<Variable, ?> interpretationIt : this.variableIterator(missingVars, interpretation))
+				{
+					final float membership = this.getMembership(antFunc, vars, interpretationIt, inferred);
+					final Object[] finalMissing = new Object[missingParams];
+					for (int i = 0; i < missingParams; i++)
+					{
+						final Object inMissing = missing[i];
+						if (inMissing instanceof Variable)
+						{
+							finalMissing[i] = interpretationIt.get(inMissing);
+						}
+						else
+						{
+							finalMissing[i] = inMissing;
+						}
+					}
+					this.setInQueue(queue, finalMissing, membership);
+				}
+			}
+			else
+			{
+				final float membership = this.getMembership(antFunc, vars, interpretation, inferred);
+				this.setInQueue(queue, missing, membership);
+			}
+		}
+		return queue.peek().el;
+	}
+
+	private void setInQueue(PriorityQueue<PriorWrap<Object[]>> queue, Object[] params, float membership)
+	{
+		final PriorWrap<Object[]> wrap = new PriorWrap<>(params, membership);
+		if (queue.contains(wrap))
+		{
+			queue.remove(wrap);
+		}
+		queue.add(wrap);
 	}
 
 	private float inferProperty(IProperty<E> searching, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
 	{
-		inferred.add(new Pair<Object[], IProperty<E>>(parameters, searching));
+		inferred.add(new Pair<>(parameters, searching));
 
 		//Find all rules that have searching as its consequent
 
@@ -96,22 +215,81 @@ public class RuleSet<E> implements IRuleSet<E>
 	{
 		//Perform backwards propagation to find all rules
 		//that are somehow applicable.
+
+		final Entry<Map<Variable, Object>, Set<Variable>> entry = this.getInterpretationAndMissingVariables(rule, parameters, inferred);
+		final Map<Variable, Object> interpretation = entry.getKey();
+		final Set<Variable> missingVars = entry.getValue();
+		final FFuncAnt<E> antFunc = rule.getAntecedent();
+		final Set<Entry<IProperty<E>, Parameter[]>> vars = antFunc.propertiesWithVars();
+
+		if (this.universe.isEmpty() && !missingVars.isEmpty())
+		{
+			return null;
+		}
+
+		FFunction<Float> aggregate = null;
+
+		if (!missingVars.isEmpty())
+		{
+			//Iterate over all possible interpretation given the variables that ARE known.
+			for (final Map<Variable, ?> interpretationIt : this.variableIterator(missingVars, interpretation))
+			{
+				final float membership = this.getMembership(antFunc, vars, interpretationIt, inferred);
+				if (membership == 0)
+				{
+					continue;
+				}
+				final FFunction<Float> cut = this.cut(rule.getConsequent(), membership);
+
+				//Aggregate all the functions for the
+				//proposition.
+				if (aggregate == null)
+				{
+					aggregate = cut;
+				}
+				else
+				{
+					aggregate = fBuilder.or(aggregate, cut);
+				}
+			}
+		}
+		else
+		{
+			final float membership = this.getMembership(antFunc, vars, interpretation, inferred);
+			if (membership == 0)
+			{
+				return null;
+			}
+			aggregate = this.cut(rule.getConsequent(), membership);
+		}
+		return aggregate;
+	}
+
+	private Entry<Map<Variable, Object>, Set<Variable>> getInterpretationAndMissingVariables(IRule<E, E> rule, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
+	{
 		final FFuncAnt<E> antFunc = rule.getAntecedent();
 		final FFuncCons<E> consFunc = rule.getConsequent();
-		final Map<Variable, Object> interpretation = new HashMap<Variable, Object>();
+		final Map<Variable, Object> interpretation = new HashMap<>();
 
 		final Variable[] consVariables = consFunc.variables();
-		final Set<Variable> missingVars = new HashSet<Variable>();
+		final Set<Variable> missingVars = new HashSet<>();
 
-		for (int i = 0; i < searching.arity(); i++)
+		for (int i = 0; i < consFunc.getPropFunc().getProperty().arity(); i++)
 		{
 			final Variable variable = consVariables[i];
 			final Object param = parameters[i];
 			if (param != null)
 			{
+				//Eg: Strong(x) -> Loves(x, x)
+				//This will stop matches where x != y
+				if (interpretation.containsKey(variable) && param != interpretation.get(variable))
+				{
+					return null;
+				}
 				interpretation.put(variable, param);
+				missingVars.remove(variable);
 			}
-			else
+			else if (!interpretation.containsKey(variable))
 			{
 				missingVars.add(variable);
 			}
@@ -167,7 +345,9 @@ public class RuleSet<E> implements IRuleSet<E>
 						final Object o = inferredVars[j];
 						if (interpOfParams[j] == null && o != null)
 						{
-							interpretation.putAll(params[j].tryInferVars(o));
+							final Map<Variable, ?> found = params[j].tryInferVars(o);
+							interpretation.putAll(found);
+							missingVars.removeAll(found.keySet());
 						}
 					}
 				}
@@ -194,48 +374,7 @@ public class RuleSet<E> implements IRuleSet<E>
 				}
 			}
 		}
-
-		if (this.universe.isEmpty() && !missingVars.isEmpty())
-		{
-			return null;
-		}
-
-		FFunction<Float> aggregate = null;
-
-		if (!missingVars.isEmpty())
-		{
-			//Iterate over all possible interpretation given the variables that ARE known.
-			for (final Map<Variable, ?> interpretationIt : this.variableIterator(missingVars, interpretation))
-			{
-				final float membership = this.getMembership(antFunc, vars, interpretationIt, inferred);
-				if (membership == 0)
-				{
-					continue;
-				}
-				final FFunction<Float> cut = this.cut(rule.getConsequent(), membership);
-
-				//Aggregate all the functions for the
-				//proposition.
-				if (aggregate == null)
-				{
-					aggregate = cut;
-				}
-				else
-				{
-					aggregate = fBuilder.or(aggregate, cut);
-				}
-			}
-		}
-		else
-		{
-			final float membership = this.getMembership(antFunc, vars, interpretation, inferred);
-			if (membership == 0)
-			{
-				return null;
-			}
-			aggregate = this.cut(rule.getConsequent(), membership);
-		}
-		return aggregate;
+		return new Pair<>(interpretation, missingVars);
 	}
 
 	private float getMembership(FFuncAnt<E> ant, Set<Entry<IProperty<E>, Parameter[]>> vars, Map<Variable, ?> interpretation, Set<Entry<Object[], IProperty<E>>> inferred)
@@ -256,7 +395,7 @@ public class RuleSet<E> implements IRuleSet<E>
 			//AKA: Backwards chaining :)
 			if (!prop.propertySet(propInterp))
 			{
-				final float crisp = this.inferProperty(prop, propInterp, new HashSet<Entry<Object[], IProperty<E>>>(inferred));
+				final float crisp = this.inferProperty(prop, propInterp, new HashSet<>(inferred));
 				prop.setProperty(crisp, propInterp);
 			}
 		}
@@ -265,7 +404,7 @@ public class RuleSet<E> implements IRuleSet<E>
 
 	private Iterable<Map<Variable, ?>> variableIterator(Set<Variable> missingVars, final Map<Variable, Object> foundVars)
 	{
-		final List<Variable> missingVarsL = new ArrayList<Variable>(missingVars);
+		final List<Variable> missingVarsL = new ArrayList<>(missingVars);
 		return new Iterable<Map<Variable, ?>>()
 		{
 
@@ -281,7 +420,7 @@ public class RuleSet<E> implements IRuleSet<E>
 					@Override
 					public boolean hasNext()
 					{
-						return this.indices == null || this.indices[this.indices.length - 1] < RuleSet.this.universe.size();
+						return this.indices == null || this.indices[this.indices.length - 1] < RuleSet.this.universe.size() - 1;
 					}
 
 					@Override
@@ -323,12 +462,12 @@ public class RuleSet<E> implements IRuleSet<E>
 		};
 	}
 
-	private <F, G> List<IRule<F, G>> applicableRules(IProperty<G> searching, List<IRule<F, G>> list)
+	private List<IRule<E, E>> applicableRules(IProperty<E> searching, List<IRule<E, E>> list)
 	{
-		final List<IRule<F, G>> rules = new ArrayList<IRule<F, G>>();
-		for (final IRule<F, G> rule : list)
+		final List<IRule<E, E>> rules = new ArrayList<>();
+		for (final IRule<E, E> rule : list)
 		{
-			final IProperty<G> property = rule.getConsequent().getProperty();
+			final IProperty<E> property = rule.getConsequent().getPropFunc().getProperty();
 			if (property.equals(searching) || property.getName().equals(searching.getName()))
 			{
 				rules.add(rule);
@@ -349,24 +488,23 @@ public class RuleSet<E> implements IRuleSet<E>
 		};
 	}
 
-	@Override
-	public E[] missing(FFuncProp<E> func, Object... parameters)
+	private static class PriorWrap<E>
 	{
-		//TODO!
-		return null;
-	}
+		public E el;
 
-	@Override
-	public E missingSnd(FFuncProp<E> func, E first)
-	{
-		return null;
-	}
+		public float value;
 
-	@Override
-	public E missingFst(FFuncProp<E> func, E second)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		private PriorWrap(E el, float value)
+		{
+			this.el = el;
+			this.value = value;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			return this.el.equals(obj);
+		}
 	}
 
 }

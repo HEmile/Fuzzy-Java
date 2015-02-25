@@ -19,10 +19,14 @@ public class FuncAnt<E> implements FFuncAnt<E>
 
 	private final FFuncProp<E> propFunc;
 
+	private final Set<Entry<IProperty<E>, Parameter[]>> pWithVars;
+
 	public FuncAnt(FFuncProp<E> propFunc, Parameter... parameters)
 	{
 		this.parameters = parameters;
 		this.propFunc = propFunc;
+		this.pWithVars = new HashSet<>(1);
+		this.pWithVars.add(new Pair<>(this.propFunc.getProperty(), this.parameters));
 	}
 
 	@Override
@@ -34,9 +38,7 @@ public class FuncAnt<E> implements FFuncAnt<E>
 	@Override
 	public Set<Entry<IProperty<E>, Parameter[]>> propertiesWithVars()
 	{
-		final Set<Entry<IProperty<E>, Parameter[]>> set = new HashSet<Entry<IProperty<E>, Parameter[]>>(1);
-		set.add(new Pair<IProperty<E>, Parameter[]>(this.propFunc.getProperty(), this.parameters));
-		return set;
+		return this.pWithVars;
 	}
 
 	@Override

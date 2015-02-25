@@ -26,14 +26,14 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 
 	public HashFRelation()
 	{
-		this.map = new HashMap<Entry<T1, T2>, Float>();
-		this.universe1 = new HashSet<T1>();
-		this.universe2 = new HashSet<T2>();
+		this.map = new HashMap<>();
+		this.universe1 = new HashSet<>();
+		this.universe2 = new HashSet<>();
 	}
 
 	public HashFRelation(int capacity)
 	{
-		this.map = new HashMap<Entry<T1, T2>, Float>(capacity);
+		this.map = new HashMap<>(capacity);
 		final int root = (int) Math.sqrt(capacity);
 		this.universe1 = new HashSet<T1>(root);
 		this.universe2 = new HashSet<T2>(root);
@@ -61,7 +61,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	public void add(T1 element1, T2 element2, float strength)
 	{
 		strength = Math.max(0.0f, Math.min(1.0f, strength));
-		final Pair<T1, T2> pair = new Pair<T1, T2>(element1, element2);
+		final Pair<T1, T2> pair = new Pair<>(element1, element2);
 		this.map.put(pair, strength);
 		this.universe1.add(element1);
 		this.universe2.add(element2);
@@ -70,7 +70,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public float remove(T1 element1, T2 element2)
 	{
-		final Pair<T1, T2> pair = new Pair<T1, T2>(element1, element2);
+		final Pair<T1, T2> pair = new Pair<>(element1, element2);
 		this.universe1.remove(element1);
 		this.universe1.remove(element2);
 		return this.map.remove(pair);
@@ -79,7 +79,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public float strengthOfRelation(Object element1, Object element2)
 	{
-		final Pair<?, ?> pair = new Pair<Object, Object>(element1, element2);
+		final Pair<?, ?> pair = new Pair<>(element1, element2);
 
 		if (this.map.containsKey(pair))
 		{
@@ -157,7 +157,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public FSet<T2> getColumn(T1 i)
 	{
-		final FSetMut<T2> set = new HashFSetMut<T2>(this.width());
+		final FSetMut<T2> set = new HashFSetMut<>(this.width());
 		for (final T2 j : this.universe2)
 		{
 			set.add(j, this.strengthOfRelation(j, i));
@@ -168,7 +168,7 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 	@Override
 	public FSet<T1> getRow(T2 j)
 	{
-		final FSetMut<T1> set = new HashFSetMut<T1>(this.width());
+		final FSetMut<T1> set = new HashFSetMut<>(this.width());
 		for (final T1 i : this.universe1)
 		{
 			set.add(i, this.strengthOfRelation(i, j));

@@ -17,31 +17,31 @@ public class StandardFunctionOps implements FFunctionOps
 	@Override
 	public <E> FFunction<E> and(FFunction<E> function1, FFunction<E> function2)
 	{
-		return new And<E>(function1, function2);
+		return new And<>(function1, function2);
 	}
 
 	@Override
 	public <E> FFunction<E> or(FFunction<E> function1, FFunction<E> function2)
 	{
-		return new Or<E>(function1, function2);
+		return new Or<>(function1, function2);
 	}
 
 	@Override
 	public <E> FFunction<E> implies(FFunction<E> function1, FFunction<E> function2)
 	{
-		return new Implies<E>(function1, function2);
+		return new Implies<>(function1, function2);
 	}
 
 	@Override
 	public <E> FFunction<E> not(FFunction<E> function)
 	{
-		return new Not<E>(function);
+		return new Not<>(function);
 	}
 
 	@Override
 	public <E> FFunction<E> cut(FFunction<E> function, float cutHeight)
 	{
-		return new Cut<E>(function, cutHeight);
+		return new Cut<>(function, cutHeight);
 	}
 
 	/**

@@ -7,6 +7,7 @@ import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
 import com.gildedgames.fuzzyjava.api.evaluation.Parameter;
 import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.api.functions.FFunction;
+import com.gildedgames.fuzzyjava.core.evaluation.exceptions.InvalidNumberOfArgumentsException;
 
 public class FuncProp<E> implements FFuncProp<E>
 {
@@ -42,13 +43,21 @@ public class FuncProp<E> implements FFuncProp<E>
 	@Override
 	public FFuncAnt<E> ant(Parameter... parameters)
 	{
-		return new FuncAnt<E>(this, parameters);
+		if (parameters.length != this.getProperty().arity())
+		{
+			throw new InvalidNumberOfArgumentsException();
+		}
+		return new FuncAnt<>(this, parameters);
 	}
 
 	@Override
 	public FFuncCons<E> cons(Variable... parameters)
 	{
-		return new FuncCons<E>(this, parameters);
+		if (parameters.length != this.getProperty().arity())
+		{
+			throw new InvalidNumberOfArgumentsException();
+		}
+		return new FuncCons<>(this, parameters);
 	}
 
 }

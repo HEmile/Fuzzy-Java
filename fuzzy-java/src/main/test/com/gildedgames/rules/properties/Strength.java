@@ -11,7 +11,7 @@ public class Strength extends BaseProp
 {
 	public static Strength inst = new Strength();
 
-	public static FFuncProp<Entity> isStrong = Rules.b.prop(new PositiveSlope(95, 30), inst);
+	public static FFuncProp<Entity> isStrong = Rules.b.prop(new PositiveSlope(100, 30), inst);
 
 	public static FFuncProp<Entity> isAverage = Rules.b.prop(new FuzzyNumber(50, 20, 20), inst);
 

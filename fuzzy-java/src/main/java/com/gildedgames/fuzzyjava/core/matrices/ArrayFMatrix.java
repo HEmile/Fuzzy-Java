@@ -59,7 +59,7 @@ public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 			{
 				if (this.pair == null)
 				{
-					this.pair = new MutablePair<Integer, Integer>(0, 0);
+					this.pair = new MutablePair<>(0, 0);
 					this.element = new MutablePair<Entry<Integer, Integer>, Float>(this.pair, ArrayFMatrix.this.membershipOf(this.pair));
 					return this.element;
 				}
@@ -127,7 +127,7 @@ public class ArrayFMatrix implements FRelationSet<Integer, Integer>
 	@Override
 	public Set<Entry<Integer, Integer>> universe()
 	{
-		final Set<Entry<Integer, Integer>> universe = new HashSet<Entry<Integer, Integer>>(this.width * this.length);
+		final Set<Entry<Integer, Integer>> universe = new HashSet<>(this.width * this.length);
 		for (int i = 0; i < this.width; i++)
 		{
 			this.vectors[i] = new ArrayFVector(this.length);

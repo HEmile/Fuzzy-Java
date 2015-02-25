@@ -2,7 +2,6 @@ package com.gildedgames.fuzzyjava.core.evaluation;
 
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncCons;
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncProp;
-import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
 import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 
 public class FuncCons<E> implements FFuncCons<E>
@@ -30,9 +29,9 @@ public class FuncCons<E> implements FFuncCons<E>
 	}
 
 	@Override
-	public IProperty<E> getProperty()
+	public FFuncProp<E> getPropFunc()
 	{
-		return this.func.getProperty();
+		return this.func;
 	}
 
 	@Override

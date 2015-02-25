@@ -13,7 +13,7 @@ public class StandardRelationOperations implements FRelationOps
 	@Override
 	public <T1, T2, T3> FRelationSet<T1, T3> maxMinComposition(FRelationSet<T1, T2> relation1, FRelationSet<T2, T3> relation2)
 	{
-		final FRelationMut<T1, T3> newRelation = new HashFRelation<T1, T3>();
+		final FRelationMut<T1, T3> newRelation = new HashFRelation<>();
 
 		for (final Entry<Entry<T1, T2>, Float> entrya : relation1)
 		{
@@ -46,7 +46,7 @@ public class StandardRelationOperations implements FRelationOps
 	@Override
 	public <T1, T2, T3> FRelationSet<T1, T3> maxProductComposition(FRelationSet<T1, T2> relation1, FRelationSet<T2, T3> relation2)
 	{
-		final FRelationMut<T1, T3> newRelation = new HashFRelation<T1, T3>();
+		final FRelationMut<T1, T3> newRelation = new HashFRelation<>();
 
 		for (final Entry<Entry<T1, T2>, Float> entrya : relation1)
 		{
@@ -172,10 +172,10 @@ public class StandardRelationOperations implements FRelationOps
 	{
 		if (matrix == null)
 		{
-			return new HashFRelation<T1, T1>(0);
+			return new HashFRelation<>(0);
 		}
 		final int n = matrix.width();
-		final FRelationMut<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
+		final FRelationMut<T1, T1> relation = new HashFRelation<>(n * n);
 		for (final T1 i : matrix.universe1())
 		{
 			for (final T1 j : matrix.universe1())
@@ -206,10 +206,10 @@ public class StandardRelationOperations implements FRelationOps
 	{
 		if (matrix == null)
 		{
-			return new HashFRelation<T1, T1>(0);
+			return new HashFRelation<>(0);
 		}
 		final int n = matrix.width();
-		final FRelationMut<T1, T1> relation = new HashFRelation<T1, T1>(n * n);
+		final FRelationMut<T1, T1> relation = new HashFRelation<>(n * n);
 		for (final T1 i : matrix.universe1())
 		{
 			for (final T1 j : matrix.universe1())
