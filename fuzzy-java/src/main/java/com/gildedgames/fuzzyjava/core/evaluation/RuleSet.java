@@ -325,6 +325,10 @@ public class RuleSet<E> implements IRuleSet<E>
 			{
 				final IProperty<E> prop = propnVar.getKey();
 				final Parameter[] params = propnVar.getValue();
+				if (prop == null)
+				{
+					continue;
+				}
 				if (prop.arity() != params.length)
 				{
 					throw new InvalidNumberOfArgumentsException();
@@ -403,6 +407,10 @@ public class RuleSet<E> implements IRuleSet<E>
 		for (final Entry<IProperty<E>, Parameter[]> propnVar : vars)
 		{
 			final IProperty<E> prop = propnVar.getKey();
+			if (prop == null)
+			{
+				continue;
+			}
 			final Object[] propInterp = new Object[prop.arity()];
 			final Parameter[] params = propnVar.getValue();
 			for (int j = 0; j < prop.arity(); j++)

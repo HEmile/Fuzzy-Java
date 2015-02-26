@@ -19,6 +19,7 @@ public class EntityGenerator
 		e.weight = Weight.inst.randomValue(r);
 		Beauty.inst.add(e, r.nextFloat());
 		e.strength = Strength.inst.randomValue(r);
+		e.male = r.nextBoolean();
 
 		return e;
 	}

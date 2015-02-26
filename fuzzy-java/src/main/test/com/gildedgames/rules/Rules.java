@@ -12,6 +12,7 @@ import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.core.FuzzyFactoryStandard;
 import com.gildedgames.rules.properties.Arrogant;
 import com.gildedgames.rules.properties.Beauty;
+import com.gildedgames.rules.properties.Gender;
 import com.gildedgames.rules.properties.Hates;
 import com.gildedgames.rules.properties.Length;
 import com.gildedgames.rules.properties.Loves;
@@ -38,15 +39,19 @@ public class Rules
 
 				Length.isAverage.c(x));
 
-		ruleSet.addRule(b.or(
+		ruleSet.addRule(b.and(
+				Gender.male(x),
 				Strength.isStrong.a(x),
 				Weight.isAverage.a(x),
-				Beauty.beautiful.a(x)),
+				Gender.female(y)),
 
 				Loves.inLove.c(y, x));
 
 		ruleSet.addRule(b.all(y,
-				Loves.inLove.a(y, x)),
+				b.implies(b.and(
+						Gender.male(x),
+						Gender.female(y)),
+						Loves.inLove.a(y, x))),
 
 				Arrogant.arrogant.c(x));
 
@@ -61,12 +66,6 @@ public class Rules
 
 		ruleSet.addRule(b.and(
 				Arrogant.modest.a(x),
-				Arrogant.modest.a(y)),
-
-				Loves.inLove.c(x, y));
-
-		ruleSet.addRule(b.and(
-				Arrogant.modest.a(x),
 				Arrogant.arrogant.a(y)),
 
 				Hates.fiercly.c(x, y));
@@ -78,10 +77,9 @@ public class Rules
 				Hates.aBit.c(x, y));
 
 		ruleSet.addRule(b.and(
-				Arrogant.average.a(x),
-				Arrogant.arrogant.a(y)),
+				Arrogant.modest.a(x)),
 
-				Loves.inLove.c(x, y));
+				Loves.not.c(x, x));
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class Rules
 		for (final Entity e : ents)
 		{
 			System.out.println(e);
-			System.out.println("arrogant: " + ruleSet.valueOf(Arrogant.inst, e));
+			System.out.println("Loves himself: " + ruleSet.valueOf(Loves.inst, e, e));
 		}
 
 		System.out.println(ruleSet.missing(Arrogant.arrogant, new Object[] { null })[0]);

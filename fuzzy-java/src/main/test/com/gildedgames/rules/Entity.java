@@ -10,9 +10,11 @@ public class Entity
 
 	public float weight = -1;
 
+	public boolean male;
+
 	@Override
 	public String toString()
 	{
-		return "length: " + this.length + " strength: " + this.strength + " weight " + this.weight + " beauty " + Beauty.inst.membershipOf(this);
+		return "Male: " + this.male + " length: " + this.length + " strength: " + this.strength + " weight " + this.weight + " beauty " + Beauty.inst.membershipOf(this);
 	}
 }
