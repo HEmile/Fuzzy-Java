@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.util;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Pair<T, U> implements Map.Entry<T, U>
 {
@@ -41,13 +42,13 @@ public class Pair<T, U> implements Map.Entry<T, U>
 		{
 			return true;
 		}
-		if (oth == null || !this.getClass().isInstance(oth))
+		if (oth == null || !(oth instanceof Entry))
 		{
 			return false;
 		}
-		final Pair<T, U> other = this.getClass().cast(oth);
-		return (this.getFirst() == null ? other.getFirst() == null : this.getFirst().equals(other.getFirst()))
-				&& (this.getSecond() == null ? other.getSecond() == null : this.getSecond().equals(other.getSecond()));
+		final Entry other = (Entry) oth;
+		return (this.getKey() == null ? other.getKey() == null : this.getKey().equals(other.getKey()))
+				&& (this.getValue() == null ? other.getValue() == null : this.getValue().equals(other.getValue()));
 	}
 
 	@Override

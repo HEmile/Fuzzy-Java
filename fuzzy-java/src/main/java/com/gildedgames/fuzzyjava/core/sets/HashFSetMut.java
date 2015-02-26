@@ -126,4 +126,10 @@ public class HashFSetMut<E> implements FSetMut<E>
 	{
 		return this.map.entrySet().iterator();
 	}
+
+	@Override
+	public boolean contains(E object)
+	{
+		return this.map.containsKey(object);
+	}
 }

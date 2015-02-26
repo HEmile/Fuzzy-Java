@@ -1,6 +1,7 @@
 package com.gildedgames.fuzzyjava.core.evaluation;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncAnt;
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncProp;
 import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
+import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
 import com.gildedgames.fuzzyjava.api.evaluation.Parameter;
 import com.gildedgames.fuzzyjava.api.evaluation.Variable;
 import com.gildedgames.fuzzyjava.util.Pair;
@@ -42,7 +44,7 @@ public class FuncAnt<E> implements FFuncAnt<E>
 	}
 
 	@Override
-	public float evaluate(Map<Variable, ?> env)
+	public float evaluate(Map<Variable, ?> env, IRuleSet<E> ruleSet, Set<Entry<List<Object>, IProperty<E>>> inferred)
 	{
 		final Object[] els = new Object[this.parameters.length];
 		for (int i = 0; i < this.parameters.length; i++)

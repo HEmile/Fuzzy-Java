@@ -38,6 +38,8 @@ public interface FSetMut<E> extends FSet<E>
 	 */
 	float remove(E object);
 
+	boolean contains(E object);
+
 	/**
 	 * Completely empties the set.
 	 */

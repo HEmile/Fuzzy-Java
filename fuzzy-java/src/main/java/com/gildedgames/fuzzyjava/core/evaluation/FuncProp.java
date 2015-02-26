@@ -41,7 +41,7 @@ public class FuncProp<E> implements FFuncProp<E>
 	}
 
 	@Override
-	public FFuncAnt<E> ant(Parameter... parameters)
+	public FFuncAnt<E> a(Parameter... parameters)
 	{
 		if (parameters.length != this.getProperty().arity())
 		{
@@ -51,7 +51,7 @@ public class FuncProp<E> implements FFuncProp<E>
 	}
 
 	@Override
-	public FFuncCons<E> cons(Variable... parameters)
+	public FFuncCons<E> c(Variable... parameters)
 	{
 		if (parameters.length != this.getProperty().arity())
 		{

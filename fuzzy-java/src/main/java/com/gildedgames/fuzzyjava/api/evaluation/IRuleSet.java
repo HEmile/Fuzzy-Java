@@ -1,5 +1,11 @@
 package com.gildedgames.fuzzyjava.api.evaluation;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 public interface IRuleSet<E>
 {
 	void addRule(FFuncAnt<E> antecedent, FFuncCons<E> consequent);
@@ -19,5 +25,9 @@ public interface IRuleSet<E>
 	float valueOf(IProperty<E> searching, Object... parameters);
 
 	Object[] missing(FFuncProp<E> func, Object... parameters);
+
+	float getMembership(FFuncAnt<E> antecedent, Map<Variable, ?> interpretation, Set<Entry<List<Object>, IProperty<E>>> inferred);
+
+	Collection<E> getUniverse();
 
 }

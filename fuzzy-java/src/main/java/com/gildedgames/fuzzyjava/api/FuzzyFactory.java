@@ -2,8 +2,10 @@ package com.gildedgames.fuzzyjava.api;
 
 import java.util.Collection;
 
-import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
+import com.gildedgames.fuzzyjava.api.evaluation.IRelationProperty;
+import com.gildedgames.fuzzyjava.api.evaluation.IRuleBuilder;
 import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
+import com.gildedgames.fuzzyjava.api.evaluation.ISetProperty;
 import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
@@ -43,8 +45,12 @@ public interface FuzzyFactory
 
 	FFunctionOps createFunctionOperations();
 
-	IPropBuilder createPropFunctionBuilder();
+	IRuleBuilder createPropFunctionBuilder();
 
 	<E> IRuleSet<E> createRuleSet(Collection<E> universe);
+
+	<E> ISetProperty<E> createSetProp(String name);
+
+	<E> IRelationProperty<E> createRelationProp(String name);
 
 }

@@ -3,7 +3,6 @@ package com.gildedgames.fuzzyjava.core.evaluation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,15 +42,6 @@ public class RuleSet<E> implements IRuleSet<E>
 	 */
 	private static final int varInferrenceIterations = 2;
 
-	private final Comparator<PriorWrap<Object[]>> comparator = new Comparator<PriorWrap<Object[]>>()
-	{
-		@Override
-		public int compare(PriorWrap<Object[]> arg0, PriorWrap<Object[]> arg1)
-		{
-			return Float.compare(arg0.value, arg1.value);
-		}
-	};
-
 	public RuleSet(Collection<E> universe)
 	{
 		this.universe = new ArrayList<>(universe);
@@ -70,7 +60,7 @@ public class RuleSet<E> implements IRuleSet<E>
 		{
 			throw new InvalidNumberOfArgumentsException();
 		}
-		return this.inferProperty(searching, value, new HashSet<Entry<Object[], IProperty<E>>>());
+		return this.inferProperty(searching, value, new HashSet<Entry<List<Object>, IProperty<E>>>());
 	}
 
 	@Override
@@ -105,7 +95,7 @@ public class RuleSet<E> implements IRuleSet<E>
 		}
 
 		final Map<Object[], Float> map = new HashMap<>(this.universe.size());
-		final Set<Entry<Object[], IProperty<E>>> inferred = new HashSet<>(0);
+		final Set<Entry<List<Object>, IProperty<E>>> inferred = new HashSet<>(0);
 		for (final IRule<E, E> rule : rules)
 		{
 			final Entry<Map<Variable, Object>, Set<Variable>> entry = this.getInterpretationAndMissingVariables(rule, parameters, inferred);
@@ -190,9 +180,9 @@ public class RuleSet<E> implements IRuleSet<E>
 		}
 	}
 
-	private float inferProperty(IProperty<E> searching, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
+	private float inferProperty(IProperty<E> searching, Object[] parameters, Set<Entry<List<Object>, IProperty<E>>> inferred)
 	{
-		inferred.add(new Pair<>(parameters, searching));
+		inferred.add(new Pair<>(Arrays.asList(parameters), searching));
 
 		//Find all rules that have searching as its consequent
 
@@ -224,12 +214,23 @@ public class RuleSet<E> implements IRuleSet<E>
 		return fBuilder.defuzzify(aggregate, searching.getMinBound(), searching.getMaxBound());
 	}
 
-	private FFunction<Float> evaluateRule(IRule<E, E> rule, IProperty<E> searching, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
+	private FFunction<Float> evaluateRule(IRule<E, E> rule, IProperty<E> searching, Object[] parameters, Set<Entry<List<Object>, IProperty<E>>> inferred)
 	{
 		//Perform backwards propagation to find all rules
 		//that are somehow applicable.
 
 		final Entry<Map<Variable, Object>, Set<Variable>> entry = this.getInterpretationAndMissingVariables(rule, parameters, inferred);
+		if (entry == null)
+		{
+			return new FFunction<Float>()
+			{
+				@Override
+				public float membershipOf(Float element)
+				{
+					return 0;
+				}
+			};
+		}
 		final Map<Variable, Object> interpretation = entry.getKey();
 		final Set<Variable> missingVars = entry.getValue();
 		final FFuncAnt<E> antFunc = rule.getAntecedent();
@@ -278,7 +279,7 @@ public class RuleSet<E> implements IRuleSet<E>
 		return aggregate;
 	}
 
-	private Entry<Map<Variable, Object>, Set<Variable>> getInterpretationAndMissingVariables(IRule<E, E> rule, Object[] parameters, Set<Entry<Object[], IProperty<E>>> inferred)
+	private Entry<Map<Variable, Object>, Set<Variable>> getInterpretationAndMissingVariables(IRule<E, E> rule, Object[] parameters, Set<Entry<List<Object>, IProperty<E>>> inferred)
 	{
 		final FFuncAnt<E> antFunc = rule.getAntecedent();
 		final FFuncCons<E> consFunc = rule.getConsequent();
@@ -364,7 +365,7 @@ public class RuleSet<E> implements IRuleSet<E>
 						}
 					}
 				}
-				else if (inferred.contains(new Pair<Object[], IProperty<E>>(interpOfParams, prop)))//For preventing endless loop
+				else if (inferred.contains(new Pair<List<Object>, IProperty<E>>(Arrays.asList(interpOfParams), prop)))//For preventing endless loop
 				{
 					//If we have already tried inferring a property for the given elements, stop
 					//trying to execute the query.
@@ -390,8 +391,15 @@ public class RuleSet<E> implements IRuleSet<E>
 		return new Pair<>(interpretation, missingVars);
 	}
 
-	private float getMembership(FFuncAnt<E> ant, Set<Entry<IProperty<E>, Parameter[]>> vars, Map<Variable, ?> interpretation, Set<Entry<Object[], IProperty<E>>> inferred)
+	@Override
+	public float getMembership(FFuncAnt<E> antecedent, Map<Variable, ?> interpretation, Set<Entry<List<Object>, IProperty<E>>> inferred)
 	{
+		return this.getMembership(antecedent, antecedent.propertiesWithVars(), interpretation, inferred);
+	}
+
+	private float getMembership(FFuncAnt<E> ant, Set<Entry<IProperty<E>, Parameter[]>> vars, Map<Variable, ?> interpretation, Set<Entry<List<Object>, IProperty<E>>> inferred)
+	{
+		outerloop:
 		for (final Entry<IProperty<E>, Parameter[]> propnVar : vars)
 		{
 			final IProperty<E> prop = propnVar.getKey();
@@ -399,7 +407,12 @@ public class RuleSet<E> implements IRuleSet<E>
 			final Parameter[] params = propnVar.getValue();
 			for (int j = 0; j < prop.arity(); j++)
 			{
-				propInterp[j] = params[j].getValue(interpretation);
+				final Object o = params[j].getValue(interpretation);
+				if (o == null)
+				{
+					continue outerloop;
+				}
+				propInterp[j] = o;
 			}
 			//If the thing we are looking for is not
 			//yet aware of the property that is required
@@ -412,7 +425,7 @@ public class RuleSet<E> implements IRuleSet<E>
 				prop.setProperty(crisp, propInterp);
 			}
 		}
-		return ant.evaluate(interpretation);
+		return ant.evaluate(interpretation, this, inferred);
 	}
 
 	private Iterable<Map<Variable, ?>> variableIterator(Set<Variable> missingVars, final Map<Variable, Object> foundVars)
@@ -473,6 +486,12 @@ public class RuleSet<E> implements IRuleSet<E>
 			}
 
 		};
+	}
+
+	@Override
+	public Collection<E> getUniverse()
+	{
+		return this.universe;
 	}
 
 	private List<IRule<E, E>> applicableRules(IProperty<E> searching, List<IRule<E, E>> list)

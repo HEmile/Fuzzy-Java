@@ -1,7 +1,6 @@
 package com.gildedgames.rules.properties;
 
 import com.gildedgames.fuzzyjava.api.evaluation.FFuncProp;
-import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
 import com.gildedgames.fuzzyjava.functions.FuzzyNumber;
 import com.gildedgames.fuzzyjava.functions.NegativeSlope;
 import com.gildedgames.fuzzyjava.functions.PositiveSlope;
@@ -10,7 +9,7 @@ import com.gildedgames.rules.Rules;
 
 public class Length extends BaseProp
 {
-	public static IProperty<Entity> inst = new Length();
+	public static Length inst = new Length();
 
 	public static FFuncProp<Entity> isTall = Rules.b.prop(new PositiveSlope(210, 45), inst);
 
@@ -27,7 +26,7 @@ public class Length extends BaseProp
 	@Override
 	public float getMaxBound()
 	{
-		return 300;
+		return 230;
 	}
 
 	@Override

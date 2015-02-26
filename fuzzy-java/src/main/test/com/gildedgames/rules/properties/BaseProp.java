@@ -1,5 +1,7 @@
 package com.gildedgames.rules.properties;
 
+import java.util.Random;
+
 import com.gildedgames.fuzzyjava.api.evaluation.IProperty;
 import com.gildedgames.rules.Entity;
 
@@ -37,6 +39,12 @@ public abstract class BaseProp implements IProperty<Entity>
 	public Object[] tryInferMissing(Object[] params)
 	{
 		return params;
+	}
+
+	public float randomValue(Random r)
+	{
+		final float newFloat = r.nextFloat();
+		return this.getMinBound() + (this.getMaxBound() - this.getMinBound()) * newFloat;
 	}
 
 }

@@ -3,8 +3,10 @@ package com.gildedgames.fuzzyjava.core;
 import java.util.Collection;
 
 import com.gildedgames.fuzzyjava.api.FuzzyFactory;
-import com.gildedgames.fuzzyjava.api.evaluation.IPropBuilder;
+import com.gildedgames.fuzzyjava.api.evaluation.IRelationProperty;
+import com.gildedgames.fuzzyjava.api.evaluation.IRuleBuilder;
 import com.gildedgames.fuzzyjava.api.evaluation.IRuleSet;
+import com.gildedgames.fuzzyjava.api.evaluation.ISetProperty;
 import com.gildedgames.fuzzyjava.api.functions.FFunctionOps;
 import com.gildedgames.fuzzyjava.api.sets.FSet;
 import com.gildedgames.fuzzyjava.api.sets.FSetMut;
@@ -12,8 +14,10 @@ import com.gildedgames.fuzzyjava.api.sets.FSetOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationMut;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationOps;
 import com.gildedgames.fuzzyjava.api.sets.relations.FRelationSet;
-import com.gildedgames.fuzzyjava.core.evaluation.FuncPropBuilder;
+import com.gildedgames.fuzzyjava.core.evaluation.RelationProperty;
+import com.gildedgames.fuzzyjava.core.evaluation.RuleBuilder;
 import com.gildedgames.fuzzyjava.core.evaluation.RuleSet;
+import com.gildedgames.fuzzyjava.core.evaluation.SetProperty;
 import com.gildedgames.fuzzyjava.core.functions.StandardFunctionOps;
 import com.gildedgames.fuzzyjava.core.matrices.ArrayFVector;
 import com.gildedgames.fuzzyjava.core.matrices.HashFVector;
@@ -98,9 +102,21 @@ public class FuzzyFactoryStandard implements FuzzyFactory
 	}
 
 	@Override
-	public IPropBuilder createPropFunctionBuilder()
+	public IRuleBuilder createPropFunctionBuilder()
 	{
-		return new FuncPropBuilder();
+		return new RuleBuilder();
+	}
+
+	@Override
+	public <E> ISetProperty<E> createSetProp(String name)
+	{
+		return new SetProperty<E>(name);
+	}
+
+	@Override
+	public <E> IRelationProperty<E> createRelationProp(String name)
+	{
+		return new RelationProperty(name);
 	}
 
 }

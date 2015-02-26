@@ -5,8 +5,8 @@ public interface FFuncProp<E> extends FContFunc<E>
 	IProperty<E> getProperty();
 
 	@SuppressWarnings("unchecked")
-	FFuncAnt<E> ant(Parameter... parameters);
+	FFuncAnt<E> a(Parameter... parameters);
 
 	@SuppressWarnings("unchecked")
-	FFuncCons<E> cons(Variable... parameters);
+	FFuncCons<E> c(Variable... parameters);
 }

@@ -1,5 +1,7 @@
 package com.gildedgames.rules;
 
+import com.gildedgames.rules.properties.Beauty;
+
 public class Entity
 {
 	public float length = -1;
@@ -11,6 +13,6 @@ public class Entity
 	@Override
 	public String toString()
 	{
-		return "length: " + this.length + " strength: " + this.strength + " weight " + this.weight;
+		return "length: " + this.length + " strength: " + this.strength + " weight " + this.weight + " beauty " + Beauty.inst.membershipOf(this);
 	}
 }

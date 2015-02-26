@@ -188,4 +188,10 @@ public class HashFRelation<T1, T2> implements FRelationMut<T1, T2>
 		return this.universe2;
 	}
 
+	@Override
+	public boolean contains(Entry<T1, T2> object)
+	{
+		return this.map.containsKey(object);
+	}
+
 }
