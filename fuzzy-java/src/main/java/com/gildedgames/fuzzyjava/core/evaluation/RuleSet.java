@@ -71,7 +71,7 @@ public class RuleSet<E> implements IRuleSet<E>
 			throw new InvalidNumberOfArgumentsException();
 		}
 		final List<IRule<E, E>> rules = new ArrayList<>();
-		for (final IRule<E, E> rule : rules)
+		for (final IRule<E, E> rule : this.rules)
 		{
 			final FFuncProp<E> property = rule.getConsequent().getPropFunc();
 			if (property.equals(func))

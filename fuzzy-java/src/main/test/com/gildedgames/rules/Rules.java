@@ -106,6 +106,6 @@ public class Rules
 			System.out.println("arrogant: " + ruleSet.valueOf(Arrogant.inst, e));
 		}
 
-		System.out.println(ruleSet.missing(Arrogant.arrogant, new Object[] { null }));
+		System.out.println(ruleSet.missing(Arrogant.arrogant, new Object[] { null })[0]);
 	}
 }
